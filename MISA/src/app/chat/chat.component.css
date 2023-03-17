@@ -1,0 +1,84 @@
+
+.chat_wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 100%;
+}
+
+.chat_wrapper > div {
+    width: 100%;
+}
+
+.chat_header {
+    background-color: #7209B7;
+}
+    .profile {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .bot_name{
+        color: white;
+        margin: 0 1rem;
+    }
+
+.chat_screen {
+    background-color: white;
+    height: 100%;
+    padding: 1rem .5rem;
+    overflow-y: scroll;
+}
+
+.chat_textbar{
+    background-color: #45B6F5;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#message{
+    border: none;
+    background: none;
+    color: white;
+    flex: 1;
+    margin: 0 .3rem;
+}
+
+#message:focus{
+    outline: none;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+li {
+    list-style: none;
+    font-size: 1rem;
+    display: block;
+}
+
+.user, .assistant {
+    border-radius: 5rem;
+    color: white;
+    width: fit-content;
+    padding: .3rem .8rem;
+    margin: .4rem;
+}
+
+.user {
+    background-color: #F72585;
+    align-self: flex-end;
+}
+
+.assistant {
+    background-color: #4361EE;
+}
