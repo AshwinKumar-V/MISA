@@ -1,0 +1,20 @@
+
+<div class="chat_wrapper">
+    <div class="chat_header">
+        <div class="profile">
+            <img src="..\..\assets\img\icons8-female-user.svg" alt="">
+            <h3 class="bot_name">MISA</h3>
+        </div>
+    </div>
+
+    <div class="chat_screen">
+        <ul>
+            <li *ngFor="let message of history" [ngClass]="message.role == 'user'? 'user': 'assistant'">{{message.text}}</li>
+        </ul>
+    </div>
+
+    <div class="chat_textbar">
+        <input type="text" id="message" name="message" [(ngModel)]="message">
+        <button class="btn btn-primary" (click)="sendMessage()">Send</button>
+    </div>
+</div>

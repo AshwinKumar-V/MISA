@@ -1,0 +1,18 @@
+
+.navbar-brand{
+    margin: 0 1rem;
+}
+
+.content_wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #333333;
+} 
+
+.chat {
+    height: 85vh;
+    margin: 1rem 0;
+    border-radius: 5rem;
+}
