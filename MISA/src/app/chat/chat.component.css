@@ -67,7 +67,7 @@ li {
 }
 
 .user, .assistant {
-    border-radius: 5rem;
+    border-radius: 1rem;
     color: white;
     width: fit-content;
     padding: .3rem .8rem;
