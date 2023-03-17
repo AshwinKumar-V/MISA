@@ -9,12 +9,17 @@
 
     <div class="chat_screen">
         <ul>
-            <li *ngFor="let message of history" [ngClass]="message.role == 'user'? 'user': 'assistant'">{{message.text}}</li>
+            <li *ngFor="let message of history">
+                <div class="d-flex flex-column" [ngClass]="message.role == 'user'? 'user': 'assistant'">{{message.text}}</div>
+                <span>{{message.time | date: 'shortTime'}}</span>
+            </li>
         </ul>
     </div>
 
     <div class="chat_textbar">
         <input type="text" id="message" name="message" [(ngModel)]="message">
-        <button class="btn btn-primary" (click)="sendMessage()">Send</button>
+        <div class="sendBtn" (click)="sendMessage()">
+            <img src="../../assets/img/icons8-send-48.png" alt="send btn">
+        </div>
     </div>
 </div>
