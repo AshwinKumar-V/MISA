@@ -15,7 +15,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //Connection String
 const uri = 'mongodb+srv://Sain:Sain123@projects.u014po5.mongodb.net/MISA?retryWrites=true&w=majority';
 
-
 // Connect to MongoDB Atlas using Mongoose
 mongoose.connect(uri, { useNewUrlParser: true })
   .then(() => console.log('Connected to MongoDB Atlas'))
@@ -35,6 +34,26 @@ const messages=[];
 
 //Basic Model configuration
 let modelName="gpt-3.5-turbo";
+
+// create a conversation schema
+const conversationSchema = new mongoose.Schema({
+  userId: String,
+  botId: String,
+  messages: [
+    {
+      role: String,
+      content: String,
+      timestamp: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+  ],
+});
+
+
+// create a conversation model
+const Conversation = mongoose.model('Conversation', conversationSchema);
 
 
 app.post("/ask", async (req, res) => 
@@ -66,6 +85,23 @@ app.post("/ask", async (req, res) =>
     
 
     console.log(messages);
+
+    const conversation = new Conversation({
+      userId: 'user123',
+      botId: 'bot123',
+      messages: messages.map(({ role, content }) => ({ role, content })),
+    });
+
+    // save the conversation to the database
+    conversation.save()
+    .then((result) => {
+      console.log(result);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+
       // return the result
       return res.status(200).json({
         success: true,
