@@ -1,15 +1,18 @@
+//imports
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { Configuration, OpenAIApi } = require("openai");
 
+//Enviroment constants configuration
 require("dotenv").config();
 
-
+//Enabling JSON serialization
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+//Connection String
 const uri = 'mongodb+srv://Sain:Sain123@projects.u014po5.mongodb.net/MISA?retryWrites=true&w=majority';
 
 
@@ -27,10 +30,13 @@ const configuration = new Configuration({
   });
 const openai = new OpenAIApi(configuration);
 
+//To setup messaging history
 const messages=[];
+
+//Basic Model configuration
 let modelName="gpt-3.5-turbo";
 
-//messages.push({ role: "assistant", content: "hello" });
+
 app.post("/ask", async (req, res) => 
 {
     // getting prompt question from request
@@ -56,11 +62,9 @@ app.post("/ask", async (req, res) =>
 
       // retrieve the completion text from response
     const completion = response.data.choices[0].message.content;   
-    //messages.push({ role: "user", content: prompt }); 
     messages.push({ role: "assistant", content: completion });
     
 
-    //console.log("Recived: "+completion);
     console.log(messages);
       // return the result
       return res.status(200).json({
