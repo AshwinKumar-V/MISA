@@ -4,6 +4,7 @@ const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { Configuration, OpenAIApi } = require("openai");
+const cors = require('cors')
 
 //Enviroment constants configuration
 require("dotenv").config();
@@ -11,6 +12,9 @@ require("dotenv").config();
 //Enabling JSON serialization
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+//Enabling CORS
+app.use(cors({origin: "*"}))
 
 //Connection String
 const uri = 'mongodb+srv://Sain:Sain123@projects.u014po5.mongodb.net/MISA?retryWrites=true&w=majority';
@@ -84,7 +88,7 @@ app.post("/ask", async (req, res) =>
     messages.push({ role: "assistant", content: completion });
     
 
-    console.log(messages);
+    // console.log(messages);
 
     const conversation = new Conversation({
       userId: 'user123',
@@ -95,7 +99,7 @@ app.post("/ask", async (req, res) =>
     // save the conversation to the database
     conversation.save()
     .then((result) => {
-      console.log(result);
+      // console.log(result);
     })
     .catch((err) => {
       console.log(err);

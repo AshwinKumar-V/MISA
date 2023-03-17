@@ -6,6 +6,8 @@
     justify-content: space-between;
     width: 100%;
     height: 100%;
+    border-radius: 1.5rem 0 0 1.5rem;
+    overflow: hidden;
 }
 
 .chat_wrapper > div {
@@ -13,6 +15,7 @@
 }
 
 .chat_header {
+    padding: .5rem 1rem;
     background-color: #7209B7;
 }
     .profile {
@@ -46,7 +49,7 @@
     background: none;
     color: white;
     flex: 1;
-    margin: 0 .3rem;
+    margin: 0 1rem;
 }
 
 #message:focus{
@@ -63,15 +66,16 @@ ul {
 li {
     list-style: none;
     font-size: 1rem;
-    display: block;
+    display: flex;
+    flex-direction: column;
 }
 
 .user, .assistant {
-    border-radius: 5rem;
+    border-radius: 1rem;
     color: white;
     width: fit-content;
-    padding: .3rem .8rem;
-    margin: .4rem;
+    padding: 0.3rem .8rem;
+    margin: 0 .4rem;
 }
 
 .user {
@@ -81,4 +85,27 @@ li {
 
 .assistant {
     background-color: #4361EE;
+}
+
+.sendBtn{
+    width: 3rem;
+    padding: .6rem;
+}
+
+.sendBtn:hover{
+    cursor: pointer;
+}
+
+.sendBtn img {
+    width: 100%;
+}
+
+span {
+    font-size: .8rem;
+    color: gray;
+    margin: 0 .5rem .3rem;
+}
+
+.user + span{
+    align-self: flex-end;
 }
