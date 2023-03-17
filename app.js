@@ -2,13 +2,13 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const { Configuration, OpenAIApi } = require("openai");
+
+require("dotenv").config();
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-const userName = 'Sain';
-const passWord = 'Sain123';
-
 
 const uri = 'mongodb+srv://Sain:Sain123@projects.u014po5.mongodb.net/MISA?retryWrites=true&w=majority';
 
@@ -19,9 +19,7 @@ mongoose.connect(uri, { useNewUrlParser: true })
   .catch((err) => console.error('Error connecting to MongoDB Atlas:', err));
 
 
-const { Configuration, OpenAIApi } = require("openai");
 
-require("dotenv").config();
 
 //Setting up configuration key
 const configuration = new Configuration({
