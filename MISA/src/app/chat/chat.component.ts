@@ -26,7 +26,6 @@ export class ChatComponent implements OnInit {
 
   async sendMessage() {
     this.history.push({role: "user", text: this.message, time: new Date()})
-    this.message = ''
     this.history.push({role: "assistant", text: 'Typing...', time: new Date()})
 
     // get response from NLP service
@@ -43,6 +42,8 @@ export class ChatComponent implements OnInit {
     catch(err) {
       console.error("Server error.")
     }
+
+    this.message = ''
   }
 
 
