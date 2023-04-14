@@ -60,6 +60,47 @@ const conversationSchema = new mongoose.Schema({
 const Conversation = mongoose.model('Conversation', conversationSchema);
 
 
+//---------------------------create a new conversation----------------
+const conversation = new Conversation({
+  userId: 'user123',
+  botId: 'bot123',
+  messages: [],
+});
+
+conversation.save()
+    .then((result) => {
+      console.log("conversation started.");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    messages.push({ role: "user", content: `given a rest api POST request schema as { ticket_title<string>: "", ticket_description<string>: "", tags <List<string>>: [] } for the following user inputs perform entity extraction from user inputs to autofill and generate json request code. now along with the above schema, add a new field for generating a response for the user input and regenerate the json, and generate only one json per response` });
+
+    openai.createChatCompletion({
+      model: modelName,
+      messages: messages,
+    })
+    .then((response) => {
+      const completion = response.data.choices[0].message.content; 
+  
+    //json extraction
+    completion = completion.match(/\{(?:[^{}]|(?R))*\}/g)
+    ticket = JSON.parse(completion)
+
+    console.log(ticket);
+
+    var bot_response = ticket.response.message
+    messages.push({ role: "assistant", content: bot_response });
+  })
+  .catch((err) => {
+    console.log(err);
+  })
+
+  
+
+//---------------------------------------------------------------------
+
 app.post("/ask", async (req, res) => 
 {
     // getting prompt question from request
@@ -85,16 +126,16 @@ app.post("/ask", async (req, res) =>
 
       // retrieve the completion text from response
     const completion = response.data.choices[0].message.content;   
-    messages.push({ role: "assistant", content: completion });
+    //json extraction
+    completion = completion.match(/\{(?:[^{}]|(?R))*\}/g)
+    ticket = JSON.parse(completion)
+
+    console.log(ticket);
+
+    var bot_response = ticket.response.message
+    messages.push({ role: "assistant", content: bot_response });
     
-
-    // console.log(messages);
-
-    const conversation = new Conversation({
-      userId: 'user123',
-      botId: 'bot123',
-      messages: messages.map(({ role, content }) => ({ role, content })),
-    });
+    conversation.messages = messages.map(({role, content}) => ({role, content}))
 
     // save the conversation to the database
     conversation.save()
