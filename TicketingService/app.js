@@ -94,4 +94,56 @@ app.get('/tickets', async (req, res) => {
     return res.json(data)
 })
 
+app.get('/tickets/:id', async (req, res) => {
+    var data = null
+    
+    // user validation
+    if (!req.headers.user_id) {
+        return res.sendStatus(401) // Unauthorized
+    }
+
+    // ticket id validation
+    if (!mongo.Types.ObjectId.isValid(req.params.id)) {
+        return res.sendStatus(404) // Not found
+    }
+
+    // get a specific ticket
+    try {
+        const ticket = await Ticket.findById(req.params.id)
+        if (!ticket) {
+            console.error("Error fetching ticket\n" + err)
+            return res.sendStatus(404) // Not found
+        }
+        data = ticket
+        console.log("Fetched ticket successfully")
+    }
+    catch(err) {
+        console.error("Error fetching ticket\n" + err)
+        return res.sendStatus(500) // Internal server error
+    }
+    return res.json(data)
+})
+
+app.patch('/tickets/:id', async (req, res) => {
+    // user validation
+    if (!req.headers.user_id) {
+        return res.sendStatus(401) // Unauthorized
+    }
+
+    // ticket id validation
+    if (!mongo.Types.ObjectId.isValid(req.params.id)) {
+        return res.sendStatus(404) // Not found
+    }
+
+    // update ticket status
+    try {
+        
+    }
+    catch(err) {
+        console.error("Error fetching ticket\n" + err)
+        return res.sendStatus(500) // Internal server error
+    }
+    return res.sendStatus(204)  // No content
+})
+
 app.listen(port, () => console.log(`Server listening on port ${port}!`))
