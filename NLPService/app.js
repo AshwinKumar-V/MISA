@@ -75,27 +75,27 @@ conversation.save()
       console.log(err);
     });
 
-    messages.push({ role: "user", content: `given a rest api POST request schema as { ticket_title<string>: "", ticket_description<string>: "", tags <List<string>>: [] } for the following user inputs perform entity extraction from user inputs to autofill and generate json request code. now along with the above schema, add a new field for generating a response for the user input and regenerate the json, and generate only one json per response` });
+    messages.push({ role: "user", content: `assume the role of a customer support bot and help users with their queries smoothly, offer to raise tickets or try to troubleshoot it yourself.` });
 
-    openai.createChatCompletion({
-      model: modelName,
-      messages: messages,
-    })
-    .then((response) => {
-      const completion = response.data.choices[0].message.content; 
+    // openai.createChatCompletion({
+    //   model: modelName,
+    //   messages: messages,
+    // })
+    // .then((response) => {
+    //   const completion = response.data.choices[0].message.content; 
   
-    //json extraction
-    completion = completion.match(/\{(?:[^{}]|(?R))*\}/g)
-    ticket = JSON.parse(completion)
+    // //json extraction
+    // completion = completion.match(/\{(?:[^{}]|(?R))*\}/g)
+    // ticket = JSON.parse(completion)
 
-    console.log(ticket);
+    // console.log(ticket);
 
-    var bot_response = ticket.response.message
-    messages.push({ role: "assistant", content: bot_response });
-  })
-  .catch((err) => {
-    console.log(err);
-  })
+    // var bot_response = ticket.response.message
+    // messages.push({ role: "assistant", content: bot_response });
+  // })
+  // .catch((err) => {
+  //   console.log(err);
+  // })
 
   
 
@@ -127,13 +127,13 @@ app.post("/ask", async (req, res) =>
       // retrieve the completion text from response
     const completion = response.data.choices[0].message.content;   
     //json extraction
-    completion = completion.match(/\{(?:[^{}]|(?R))*\}/g)
-    ticket = JSON.parse(completion)
+    // completion = completion.match(/\{(?:[^{}]|(?R))*\}/g)
+    // ticket = JSON.parse(completion)
 
-    console.log(ticket);
+    // console.log(ticket);
 
-    var bot_response = ticket.response.message
-    messages.push({ role: "assistant", content: bot_response });
+    // var bot_response = ticket.response.message
+    messages.push({ role: "assistant", content: completion });
     
     conversation.messages = messages.map(({role, content}) => ({role, content}))
 
