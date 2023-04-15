@@ -34,16 +34,20 @@ const Ticket = mongo.model('ticket', new mongo.Schema({
 
 
 app.get('/', (req, res) => {
+    console.log("GET /")
     return res.send("Ticketing Service running!") 
 })
 
 app.post('/tickets', async (req, res) => {
+    console.log("POST /tickets")
+
     var data = {
         ticket_id: null
     }
     
     // user validation
     if (!req.headers.user_id) {
+        console.log("Unauthorized")
         return res.sendStatus(401) // Unauthorized
     }
 
@@ -71,12 +75,14 @@ app.post('/tickets', async (req, res) => {
 })
 
 app.get('/tickets', async (req, res) => {
+    console.log("GET /tickets")
     var data = {
         tickets: null
     }
     
     // user validation
     if (!req.headers.user_id) {
+        console.log("Unauthorized")
         return res.sendStatus(401) // Unauthorized
     }
 
@@ -94,15 +100,18 @@ app.get('/tickets', async (req, res) => {
 })
 
 app.get('/tickets/:id', async (req, res) => {
+    console.log("GET /tickets/:id")
     var data = null
     
     // user validation
     if (!req.headers.user_id) {
+        console.log("Unauthorized")
         return res.sendStatus(401) // Unauthorized
     }
 
     // ticket id validation
     if (!mongo.Types.ObjectId.isValid(req.params.id)) {
+        console.log("Not found")
         return res.sendStatus(404) // Not found
     }
 
@@ -124,25 +133,33 @@ app.get('/tickets/:id', async (req, res) => {
 })
 
 app.patch('/tickets/:id', async (req, res) => {
+    console.log("PATCH /tickets/:id")
     // user validation
     if (!req.headers.user_id) {
+        console.log("Unauthorized")
         return res.sendStatus(401) // Unauthorized
     }
 
     // ticket id validation
     if (!mongo.Types.ObjectId.isValid(req.params.id)) {
+        console.log("Not found")
         return res.sendStatus(404) // Not found
     }
 
     // update ticket status
     try {
-        const ret = await Ticket.findById()
+        const ticket = await Ticket.findByIdAndUpdate(req.params.id, { status: req.body.status })
+        if (!ticket) {
+            console.error("Error updating ticket status\n" + err)
+            return res.sendStatus(404) // Not found
+        }
+        console.log("Updated ticket status successfully")
     }
     catch(err) {
-        console.error("Error fetching ticket\n" + err)
+        console.error("Error updating ticket status\n" + err)
         return res.sendStatus(500) // Internal server error
     }
     return res.sendStatus(204)  // No content
 })
 
-app.listen(port, () => console.log(`Server listening on port ${port}!`))
+app.listen(port, () => console.log(`Ticketing Service listening on port ${port}!`))
