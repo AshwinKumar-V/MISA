@@ -3,7 +3,6 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const path = require('path')
 const mongo = require('mongoose')
-const { error } = require('console')
 require('dotenv').config()
 
 const app = express()
@@ -137,7 +136,7 @@ app.patch('/tickets/:id', async (req, res) => {
 
     // update ticket status
     try {
-        
+        const ret = await Ticket.findById()
     }
     catch(err) {
         console.error("Error fetching ticket\n" + err)
