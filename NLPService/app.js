@@ -23,14 +23,6 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration)
 let modelName = process.env.MODEL_NAME
 
-// conversation history
-const conversation = []
-
-// assistant role prompt
-conversation.push({ role: "user", content: process.env.ROLE_PROMPT })
-console.log("Assistant role assigned")
-
-
 app.get('/', (req, res) => {
   console.log("GET /")
   return res.send("NLP Service running!") 
@@ -54,8 +46,6 @@ app.post('/chat', async (req, res) => {
       console.log("Bad request")
       return res.sendStatus(400) // Bad request
     }
-
-    conversation.push({ role: "user", content: req.body.prompt})
     
     //Storing user message using Conversation MicroService
     console.log("Pushing User Message");
@@ -69,9 +59,20 @@ app.post('/chat', async (req, res) => {
     }
   
     try {
+      
+      history =[];
+      try {
+        history = await axios.get('http://localhost:3001/history');
+        console.log("Getting History");
+        console.log(history.data)
+      } catch (err) {
+        console.error(err)
+        res.status(500).send('Error getting messages')
+      }
+
       const response = await openai.createChatCompletion({
         model: modelName,
-        messages: conversation,
+        messages: history.data,
         // prompt,
         // "max_tokens": 10,
         // "temperature": 0.8,
@@ -82,8 +83,6 @@ app.post('/chat', async (req, res) => {
       })
 
       const completion = response.data.choices[0].message.content  
-      conversation.push({ role: "assistant", content: completion })
-
       //Storing bot message using Conversation MicroService
       console.log("Pushing Bot Message");
       const botmessage = { role: "assistant", content: completion };
@@ -117,7 +116,7 @@ app.post("/pushmessageuser",async (req,res) =>
       res.status(500).send('Error adding message')
     }
     
-})
+});
 
 app.post("/pushmessagebot",async (req,res) => 
 {
@@ -130,13 +129,19 @@ app.post("/pushmessagebot",async (req,res) =>
     console.error(err)
     res.status(500).send('Error adding message')
   }
-})
+});
 
-
-app.get("/history",(req,res) => 
+//Retrive Context
+app.get("/history",async (req,res) => 
 {
     console.log("Requested hit on /history");
-    res.send(messages);
+    try {
+      const response = await axios.get('http://localhost:3001/history')
+      res.json(response.data)
+    } catch (err) {
+      console.error(err)
+      res.status(500).send('Error getting messages')
+    }
 })
 
 app.listen(port, () => console.log(`NLP Service listening on port ${port}!`))

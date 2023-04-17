@@ -25,7 +25,8 @@ mongoose.connect(MONGOURI, { useNewUrlParser: true })
 
 //To Store Messages
 const messages=[];
-
+messages.push({ role: "user", content: process.env.ROLE_PROMPT })
+console.log("Assistant role assigned")
 
 app.get("/",(req,res) => 
 {
@@ -53,6 +54,6 @@ app.post("/writemessagebot",(req,res) =>
 app.get("/history",(req,res) => 
 {
     console.log("Requested hit on /history");
-    res.send(messages);
+    res.json(messages);
 })
 app.listen(PORT,()=> console.log("Conversations Microservice started at port:"+PORT));
