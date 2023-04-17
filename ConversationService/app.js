@@ -28,12 +28,14 @@ const messages=[];
 messages.push({ role: "user", content: process.env.ROLE_PROMPT })
 console.log("Assistant role assigned")
 
+//Static Message
 app.get("/",(req,res) => 
 {
     console.log("Requested hit on /");
     res.send("This is the Conversations MicroService");
 })
 
+//Push User Message to the Context store
 app.post("/writemessageuser",(req,res) => 
 {
     console.log("Requested hit on /writemessageuser");
@@ -42,6 +44,7 @@ app.post("/writemessageuser",(req,res) =>
     res.send('User Message added successfully')
 })
 
+//Push Bot Message to the Context store
 app.post("/writemessagebot",(req,res) => 
 {
     console.log("Requested hit on /pushmessagebot");
@@ -50,10 +53,20 @@ app.post("/writemessagebot",(req,res) =>
     res.send('Bot Message added successfully')
 })
 
-
+//Retrieve Context
 app.get("/history",(req,res) => 
 {
     console.log("Requested hit on /history");
     res.json(messages);
 })
+
+//Clear Context
+app.get("/clearhistory",(req,res) => 
+{
+    console.log("Requested hit on /clearhistory");
+    messages.splice(1, messages.length - 1);
+    res.send('Message History Cleared') 
+})
+
+
 app.listen(PORT,()=> console.log("Conversations Microservice started at port:"+PORT));
