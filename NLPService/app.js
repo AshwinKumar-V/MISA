@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const { Configuration, OpenAIApi } = require("openai")
 const cors = require('cors')
 const path = require('path')
+const axios = require('axios')
 require("dotenv").config()
 
 const app = express();
@@ -55,6 +56,17 @@ app.post('/chat', async (req, res) => {
     }
 
     conversation.push({ role: "user", content: req.body.prompt})
+    
+    //Storing user message using Conversation MicroService
+    console.log("Pushing User Message");
+    const usermessage = { role: "user", content: req.body.prompt};
+    try {
+      await axios.post('http://localhost:3001/writemessageuser', { usermessage })
+      //res.send('User Message Pushed successfully')
+    } catch (err) {
+      console.error(err)
+      res.status(500).send('Error adding message')
+    }
   
     try {
       const response = await openai.createChatCompletion({
@@ -71,6 +83,18 @@ app.post('/chat', async (req, res) => {
 
       const completion = response.data.choices[0].message.content  
       conversation.push({ role: "assistant", content: completion })
+
+      //Storing bot message using Conversation MicroService
+      console.log("Pushing Bot Message");
+      const botmessage = { role: "assistant", content: completion };
+      try {
+        await axios.post('http://localhost:3001/writemessagebot', { botmessage })
+        //res.send('User Message Pushed successfully')
+      } catch (err) {
+        console.error(err)
+        res.status(500).send('Error adding message')
+      }
+
       data.response = completion
       console.log("Response generated for user input")
     } 
@@ -80,5 +104,39 @@ app.post('/chat', async (req, res) => {
     }
     return res.json(data)
 });
+
+app.post("/pushmessageuser",async (req,res) => 
+{
+    console.log("Requested hit on /pushmessageuser");
+    const usermessage = { role: "user", content: "Hi bot" };
+    try {
+      await axios.post('http://localhost:3001/writemessageuser', { usermessage })
+      res.send('User Message Pushed successfully')
+    } catch (err) {
+      console.error(err)
+      res.status(500).send('Error adding message')
+    }
+    
+})
+
+app.post("/pushmessagebot",async (req,res) => 
+{
+  console.log("Requested hit on /pushmessagebot");
+  const botmessage = { role: "assistant", content: "Hi user" };
+  try {
+    await axios.post('http://localhost:3001/writemessagebot', { botmessage })
+    res.send('Bot Message Pushed Successfully')
+  } catch (err) {
+    console.error(err)
+    res.status(500).send('Error adding message')
+  }
+})
+
+
+app.get("/history",(req,res) => 
+{
+    console.log("Requested hit on /history");
+    res.send(messages);
+})
 
 app.listen(port, () => console.log(`NLP Service listening on port ${port}!`))

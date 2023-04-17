@@ -25,7 +25,6 @@ mongoose.connect(MONGOURI, { useNewUrlParser: true })
 
 //To Store Messages
 const messages=[];
-messages.push({ role: "system", content: "You are a helpful chatbot assistant named MISA that will help users to solve their issue.when the user tells you an issue you give a solution. if the user says that doesn't work you give another solution. If that also doesn't work for the user you should ask the ask user if they want to generate a ticket or not. if they say yes send a messsage saying that a ticket is issued and give out details like ticketid, ticket title, ticket description in json format, autofill this information without asking the user." });
 
 
 app.get("/",(req,res) => 
@@ -34,18 +33,20 @@ app.get("/",(req,res) =>
     res.send("This is the Conversations MicroService");
 })
 
-app.post("/pushmessageuser",(req,res) => 
+app.post("/writemessageuser",(req,res) => 
 {
-    console.log("Requested hit on /pushmessageuser");
-    messages.push({ role: "user", content: "Hi" });
-    res.send("User Message Pushed");
+    console.log("Requested hit on /writemessageuser");
+    const usermessage = req.body.usermessage
+    messages.push(usermessage)
+    res.send('User Message added successfully')
 })
 
-app.post("/pushmessagebot",(req,res) => 
+app.post("/writemessagebot",(req,res) => 
 {
     console.log("Requested hit on /pushmessagebot");
-    messages.push({ role: "assistant", content: "Hi" });
-    res.send("Bot Message Pushed");
+    const botmessage = req.body.botmessage
+    messages.push(botmessage)
+    res.send('Bot Message added successfully')
 })
 
 
