@@ -1,120 +1,65 @@
-//imports
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const { Configuration, OpenAIApi } = require("openai");
+const express = require('express')
+const bodyParser = require('body-parser')
+const { Configuration, OpenAIApi } = require("openai")
 const cors = require('cors')
+const path = require('path')
+require("dotenv").config()
 
-//Enviroment constants configuration
-require("dotenv").config();
+const app = express();
+const port = process.env.BACKEND_PORT
 
-//Enabling JSON serialization
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-//Enabling CORS
-app.use(cors({origin: "*"}))
-
-//Connection String
-const uri = 'mongodb+srv://Sain:Sain123@projects.u014po5.mongodb.net/MISA?retryWrites=true&w=majority';
-
-// Connect to MongoDB Atlas using Mongoose
-mongoose.connect(uri, { useNewUrlParser: true })
-  .then(() => console.log('Connected to MongoDB Atlas'))
-  .catch((err) => console.error('Error connecting to MongoDB Atlas:', err));
+//middlewares
+app.use(express.static(path.join(__dirname, '/public')))
+app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json())
+app.use(cors({ alllowed_origins: "*" }))
 
 
-
-
-//Setting up configuration key
+// openai configuration
 const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
-  });
-const openai = new OpenAIApi(configuration);
+})
+const openai = new OpenAIApi(configuration)
+let modelName = process.env.MODEL_NAME
 
-//To setup messaging history
-const messages=[];
+// conversation history
+const conversation = []
 
-//Basic Model configuration
-let modelName="gpt-3.5-turbo";
-
-// create a conversation schema
-const conversationSchema = new mongoose.Schema({
-  userId: String,
-  botId: String,
-  messages: [
-    {
-      role: String,
-      content: String,
-      timestamp: {
-        type: Date,
-        default: Date.now,
-      },
-    },
-  ],
-});
+// assistant role prompt
+conversation.push({ role: "user", content: process.env.ROLE_PROMPT })
+console.log("Assistant role assigned")
 
 
-// create a conversation model
-const Conversation = mongoose.model('Conversation', conversationSchema);
+app.get('/', (req, res) => {
+  console.log("GET /")
+  return res.send("NLP Service running!") 
+})
 
+app.post('/chat', async (req, res) => {
+    console.log("POST /chat")
 
-//---------------------------create a new conversation----------------
-const conversation = new Conversation({
-  userId: 'user123',
-  botId: 'bot123',
-  messages: [],
-});
+    var data = {
+      response: null
+    }
+    
+    // user validation
+    if (!req.headers.user_id) {
+      console.log("Unauthorized")
+      return res.sendStatus(401) // Unauthorized
+    }
 
-conversation.save()
-    .then((result) => {
-      console.log("conversation started.");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    // user prompt validation
+    if (!req.body.prompt) {
+      console.log("Bad request")
+      return res.sendStatus(400) // Bad request
+    }
 
-    messages.push({ role: "user", content: `given a rest api POST request schema as { ticket_title<string>: "", ticket_description<string>: "", tags <List<string>>: [] } for the following user inputs perform entity extraction from user inputs to autofill and generate json request code. now along with the above schema, add a new field for generating a response for the user input and regenerate the json, and generate only one json per response` });
-
-    openai.createChatCompletion({
-      model: modelName,
-      messages: messages,
-    })
-    .then((response) => {
-      const completion = response.data.choices[0].message.content; 
-  
-    //json extraction
-    completion = completion.match(/\{(?:[^{}]|(?R))*\}/g)
-    ticket = JSON.parse(completion)
-
-    console.log(ticket);
-
-    var bot_response = ticket.response.message
-    messages.push({ role: "assistant", content: bot_response });
-  })
-  .catch((err) => {
-    console.log(err);
-  })
-
-  
-
-//---------------------------------------------------------------------
-
-app.post("/ask", async (req, res) => 
-{
-    // getting prompt question from request
-    console.log("hit on /ask");
-    const prompt = req.body.prompt;
+    conversation.push({ role: "user", content: req.body.prompt})
   
     try {
-      if (prompt == null) {
-        throw new Error("Uh oh, no prompt was provided"); 
-      }
-      messages.push({ role: "user", content: prompt});
       const response = await openai.createChatCompletion({
         model: modelName,
-        messages: messages,
+        messages: conversation,
         // prompt,
         // "max_tokens": 10,
         // "temperature": 0.8,
@@ -122,58 +67,18 @@ app.post("/ask", async (req, res) =>
         // "stream": false,
         // "logprobs": null,
         // "stop": "\n"
-      });
+      })
 
-      // retrieve the completion text from response
-    const completion = response.data.choices[0].message.content;   
-    //json extraction
-    completion = completion.match(/\{(?:[^{}]|(?R))*\}/g)
-    ticket = JSON.parse(completion)
-
-    console.log(ticket);
-
-    var bot_response = ticket.response.message
-    messages.push({ role: "assistant", content: bot_response });
-    
-    conversation.messages = messages.map(({role, content}) => ({role, content}))
-
-    // save the conversation to the database
-    conversation.save()
-    .then((result) => {
-      // console.log(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
-
-      // return the result
-      return res.status(200).json({
-        success: true,
-        message: completion,
-      });
-    } catch (error) {
-      console.log(error.message);
+      const completion = response.data.choices[0].message.content  
+      conversation.push({ role: "assistant", content: completion })
+      data.response = completion
+      console.log("Response generated for user input")
+    } 
+    catch (err) {
+      console.error("Error responding to user input\n" + err)
+      return res.sendStatus(500) // Internal server issue
     }
+    return res.json(data)
 });
 
-//sample get
-app.get("/",(req,res) => 
-{
-    res.send("This is a static test message");
-    console.log("Requested hit on /");
-})
-
-app.listen(3000,()=> console.log("App server started"));
-
-//sample post
-app.post("/changemodel",async(req,res) =>
-{
-    const model = req.body.model;
-    if(!model)
-    {
-        return res.sendStatus(400);
-    }
-    modelName = model
-    console.log("model changed to: " + modelName);
-});
+app.listen(port, () => console.log(`NLP Service listening on port ${port}!`))
