@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const { Configuration, OpenAIApi } = require("openai")
 const cors = require('cors')
 const path = require('path')
+const { log } = require('console')
 require("dotenv").config()
 
 const app = express();
@@ -26,7 +27,7 @@ let modelName = process.env.MODEL_NAME
 const conversation = []
 
 // assistant role prompt
-conversation.push({ role: "user", content: process.env.ROLE_PROMPT })
+conversation.push({ role: "system", content: process.env.ROLE_PROMPT })
 console.log("Assistant role assigned")
 
 
@@ -69,10 +70,21 @@ app.post('/chat', async (req, res) => {
         // "stop": "\n"
       })
 
-      const completion = response.data.choices[0].message.content  
-      conversation.push({ role: "assistant", content: completion })
+      var completion = response.data.choices[0].message.content 
+
+      console.log(conversation)
+      console.log("\n\n")
+      console.log(completion)
+
+      completion = JSON.parse(completion) 
       data.response = completion
+
+      conversation.push({ role: "assistant", content: completion.bot_response })
       console.log("Response generated for user input")
+
+      if (completion.action == "ticket") {
+        console.log(completion.ticket)
+      }
     } 
     catch (err) {
       console.error("Error responding to user input\n" + err)
