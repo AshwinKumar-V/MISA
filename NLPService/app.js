@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const { Configuration, OpenAIApi } = require("openai")
 const cors = require('cors')
 const path = require('path')
+const { writeConv, createTicket } = require('./utils')
 require("dotenv").config()
 
 const app = express();
@@ -27,6 +28,7 @@ const conversation = []
 
 // assistant role prompt
 conversation.push({ role: "system", content: process.env.ROLE_PROMPT })
+writeConv(conversation)
 console.log("Assistant role assigned")
 
 
@@ -55,6 +57,7 @@ app.post('/chat', async (req, res) => {
     }
 
     conversation.push({ role: "user", content: req.body.prompt})
+    writeConv(conversation)
   
     // openai api call
     try {
@@ -72,17 +75,31 @@ app.post('/chat', async (req, res) => {
 
       var completion = response.data.choices[0].message.content 
       conversation.push({ role: "assistant", content: completion })
-
-      data.response = completion
+      writeConv(conversation)
       console.log("Response generated for user input")
 
+      // ticketing integration
       try {
         completion = JSON.parse(completion) 
         data.response = completion
 
-        // extract ticket
         if (completion.action == "ticket") {
-          console.log(completion.ticket)
+
+          // create ticket
+          const ticket_id = await createTicket(completion.ticket)
+          conversation.push({ role: "system", content: "ticket_id: " + ticket_id })
+          writeConv(conversation)
+
+          // generate response for ticket creation
+          const response = await openai.createChatCompletion({
+            model: modelName,
+            messages: conversation,
+          })
+    
+          var completion2 = response.data.choices[0].message.content 
+          conversation.push({ role: "assistant", content: completion2 })
+          writeConv(conversation)
+          data.response = completion2
         }
       }
       catch(err) {
