@@ -3,7 +3,6 @@ const bodyParser = require('body-parser')
 const { Configuration, OpenAIApi } = require("openai")
 const cors = require('cors')
 const path = require('path')
-const { log } = require('console')
 require("dotenv").config()
 
 const app = express();
@@ -57,6 +56,7 @@ app.post('/chat', async (req, res) => {
 
     conversation.push({ role: "user", content: req.body.prompt})
   
+    // openai api call
     try {
       const response = await openai.createChatCompletion({
         model: modelName,
@@ -71,19 +71,22 @@ app.post('/chat', async (req, res) => {
       })
 
       var completion = response.data.choices[0].message.content 
+      conversation.push({ role: "assistant", content: completion })
 
-      console.log(conversation)
-      console.log("\n\n")
-      console.log(completion)
-
-      completion = JSON.parse(completion) 
       data.response = completion
-
-      conversation.push({ role: "assistant", content: completion.bot_response })
       console.log("Response generated for user input")
 
-      if (completion.action == "ticket") {
-        console.log(completion.ticket)
+      try {
+        completion = JSON.parse(completion) 
+        data.response = completion
+
+        // extract ticket
+        if (completion.action == "ticket") {
+          console.log(completion.ticket)
+        }
+      }
+      catch(err) {
+        console.error("Error parsing JSON response\n" + err)
       }
     } 
     catch (err) {
@@ -91,6 +94,6 @@ app.post('/chat', async (req, res) => {
       return res.sendStatus(500) // Internal server issue
     }
     return res.json(data)
-});
+})
 
 app.listen(port, () => console.log(`NLP Service listening on port ${port}!`))

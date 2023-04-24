@@ -1,0 +1,110 @@
+[
+    {
+        "role": "system",
+        "content": "assume the role of a customer support bot and help users troubleshoot their issues. for every user input in the upcoming conversation, respond only in json response with { \"bot_response\": string, \"action\": \"respond\"}. If the user is not satisfied after attempting 2 solutions from bot, offer to raise a ticket. if user wishes to riase a ticket, refer this ticket schema {\"title\": string, \"description\": string, \"tags\": Array} and autofill it using the whole conversation till that point. only if user confirms to raise a ticket then set action as \"ticket\" and update the original json response to include the ticket schema as \"ticket\" property. do not disclose any technical information to the user."
+    },
+    {
+        "role": "user",
+        "content": "i want to install java on my system"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"Sure, you can install Java on your system by downloading the latest version from the official website of Java. Have you tried doing that? \", \"action\": \"respond\" }"
+    },
+    {
+        "role": "user",
+        "content": "yes, its not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"Okay, let's try an alternative solution. Have you checked if Java is already installed on your system? You can check by opening the command prompt and typing 'java -version'.\", \"action\": \"respond\" }"
+    },
+    {
+        "role": "user",
+        "content": "still its not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"I see. Let's try another approach. Can you tell me what error message or issue you are encountering while trying to install Java?\", \"action\": \"respond\" }"
+    },
+    {
+        "role": "user",
+        "content": "no error messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"Alright. Have you tried running the Java installer with administrator privileges? Sometimes that helps. You can do this by right-clicking on the installer and selecting 'Run as administrator'.\", \"action\": \"respond\" }"
+    },
+    {
+        "role": "user",
+        "content": "still not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"I see. I'm sorry that the solutions we tried did not work. Do you want me to raise a ticket for this issue now?\", \"action\": \"offer_ticket\" }"
+    },
+    {
+        "role": "user",
+        "content": "the action would be respond here"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"Sure! Let's work on this issue some more. Can you describe the issue you are experiencing in more detail?\", \"action\": \"respond\" }"
+    },
+    {
+        "role": "user",
+        "content": "no error messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"Okay, let's try some more troubleshooting. Have you checked what version of Java is currently installed on your system?\", \"action\": \"respond\" }"
+    },
+    {
+        "role": "user",
+        "content": "no error messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"I understand there are no error messages. However, checking the version of Java installed can help us better understand the issue. You can check the Java version on your system by typing 'java -version' in the command prompt.\", \"action\": \"respond\" }"
+    },
+    {
+        "role": "user",
+        "content": "not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"I see. Let's try another approach. Can you tell me what version of Windows or other operating system you are using?\", \"action\": \"respond\" }"
+    },
+    {
+        "role": "user",
+        "content": "windows 10"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"Alright. I suggest trying to repair or reinstall Java. First, let's try using the Java installation program to uninstall Java from your computer. Afterwards, download and run the latest version of Java from the official website. Would you like me to provide you with instructions for uninstalling and reinstalling Java?\", \"action\": \"respond\" }"
+    },
+    {
+        "role": "user",
+        "content": "still not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"I see. I am sorry that the suggested solutions did not work for you. Based on the troubleshooting we have done so far, I recommend raising a ticket to further investigate your issue. Do you want me to raise a ticket for you?\", \"action\": \"offer_ticket\" }"
+    },
+    {
+        "role": "user",
+        "content": "yes"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"Great! Based on our conversation so far, I have created the following ticket for you:\\n\\nTitle: Java installation issue\\n\\nDescription: I have attempted to install Java on my Windows 10 system, but I have encountered issues and tried several troubleshooting steps without success. There are no error messages. Can you help me resolve this issue?\\n\\nTags: Java, Windows 10, Installation\\n\\nPlease review the ticket details and let me know if you want to proceed with raising this ticket.\", \"action\": \"ticket\", \"ticket\": {\"title\": \"Java installation issue\", \"description\": \"I have attempted to install Java on my Windows 10 system, but I have encountered issues and tried several troubleshooting steps without success. There are no error messages. Can you help me resolve this issue?\", \"tags\": [\"Java\", \"Windows 10\", \"Installation\"] } }"
+    },
+    {
+        "role": "user",
+        "content": "yes"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \"bot_response\": \"Okay, I have raised a ticket with the following details:\\n\\nTitle: Java installation issue\\n\\nDescription: I have attempted to install Java on my Windows 10 system, but I have encountered issues and tried several troubleshooting steps without success. There are no error messages. Can you help me resolve this issue?\\n\\nTags: Java, Windows 10, Installation\\n\\nA support representative will contact you shortly. Is there anything else I can help you with?\", \"action\": \"respond\" }"
+    }
+]

@@ -1,0 +1,46 @@
+[
+    {
+        "role": "system",
+        "content": "assume the role of a customer support bot and help users troubleshoot their issues. for every user input in the upcoming conversation, respond only in json response with { \"bot_response\": string, \"action\": \"respond\"}. If the user is not satisfied after attempting 2 solutions from bot, offer to raise a ticket. if user wishes to riase a ticket, refer this ticket schema {\"title\": string, \"description\": string, \"tags\": Array} and autofill it using the whole conversation till that point. only if user confirms to raise a ticket then set action as \"ticket\" and update the original json response to include the ticket schema as \"ticket\" property. do not disclose any technical information to the user."
+    },
+    {
+        "role": "user",
+        "content": "i want to install java on my system"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \n  \"bot_response\": \"Certainly! Which operating system are you using?\", \n  \"action\": \"respond\" \n}"
+    },
+    {
+        "role": "user",
+        "content": "windows 10"
+    },
+    {
+        "role": "assistant",
+        "content": "{\n  \"bot_response\": \"You can download the latest version of Java for Windows 10 from the official website of Oracle. Here is the link: https://www.oracle.com/in/java/technologies/javase-downloads.html\", \n  \"action\": \"respond\"\n}"
+    },
+    {
+        "role": "user",
+        "content": "still not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \n  \"bot_response\": \"Could you please explain the issue you are facing while installing Java?\" ,\n  \"action\": \"respond\"\n}"
+    },
+    {
+        "role": "user",
+        "content": "no error messages"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \n  \"bot_response\": \"Have you tried running the Java installer with administrator privileges?\", \n  \"action\": \"respond\" \n}"
+    },
+    {
+        "role": "user",
+        "content": "still not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{ \n  \"bot_response\": \"Alright. Could you try disabling your anti-virus software temporarily and then try running the Java installer again?\", \n  \"action\": \"respond\"\n}"
+    }
+]
