@@ -98,7 +98,7 @@ app.post("/conversationupdate", (req, res) => {
     const lastMessage = messages[lastMessageIndex];
     const newMessage = {
     message_id: uuidv4(),
-    sender: lastMessage.role,
+    sender: lastMessage.role    ,
     text: lastMessage.content,
     };
     currentTime = new Date();
@@ -117,7 +117,22 @@ app.post("/conversationupdate", (req, res) => {
     res.send('New Message added successfully')
 });
 
-
+// Retrieve conversations by conversation_id
+app.get('/conversations/:id', (req, res) => {
+  const conversationId = req.params.id;
+  Conversation.findOne({ conversation_id: conversationId })
+    .then(conversation => {
+      if (!conversation) {
+        res.status(404).send('Conversation not found');
+      } else {
+        res.json(conversation);
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      res.status(500).send('Internal Server Error');
+    });
+});
 
 //Static Message
 app.get("/", (req, res) => {
