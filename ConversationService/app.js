@@ -119,6 +119,7 @@ app.post("/conversationupdate", (req, res) => {
 
 // Retrieve conversations by conversation_id
 app.get('/conversations/:id', (req, res) => {
+  console.log("Requested hit on /conversations:id");
   const conversationId = req.params.id;
   Conversation.findOne({ conversation_id: conversationId })
     .then(conversation => {
