@@ -84,9 +84,14 @@ app.delete('/chat', (req, res) => {
   }
 
   try {
-    conversation.pop()
-    writeConv(conversation)
-    console.log("Successfully popped conversation")
+    if (conversation.length > 1) {
+      conversation.pop()
+      writeConv(conversation)
+      console.log("Successfully popped conversation")
+    }
+    else {
+      console.log("Empty conversation")
+    }
   }
   catch(err) {
     console.error("Error popping conversation\n" + err)

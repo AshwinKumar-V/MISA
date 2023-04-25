@@ -28,16 +28,17 @@ export class ChatComponent implements OnInit {
   async sendMessage() {
     this.history.push({role: "user", text: this.message, time: new Date(), error: undefined})
     this.history.push({role: "assistant", text: 'Typing...', time: new Date(), error: undefined})
+    var msg = this.message
     this.message = ''
     this.isBotTyping = true
 
     // get response from NLP service
     try{
-      var headers = new HttpHeaders().set('user_id', "u123")
-      var response = await lastValueFrom(this.http.post("http://localhost:8000/chat", {prompt: this.message}, { headers: headers }))
+      var headers = new HttpHeaders().set("user_id", "u123")
+      var response = await lastValueFrom(this.http.post("http://localhost:8000/chat", {prompt: msg}, { headers: headers }))
       if (response) {
         this.history.pop()
-        this.history.push({role: "assistant", text: (response as any).response, time: new Date()})
+        this.history.push({role: "assistant", text: (response as any).response, time: new Date(), error: undefined})
       }
       else {
         this.history.pop()

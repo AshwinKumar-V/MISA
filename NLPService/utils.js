@@ -29,8 +29,7 @@ async function callOpenAI(conversation) {
     completion = completion.match(/{.*}/)[0]
   } 
   catch (err) {
-    console.error("Error connecting to openai\n" + err)
-    return Error()
+    throw new Error("Error in openai call\n" + err)
   }
   return completion
 }
@@ -41,8 +40,7 @@ async function extractJSON(completion) {
     completion = JSON.parse(completion)
   }
   catch (err) {
-    console.error("Error extracting JSON\n" + err)
-    return Error()
+    throw new Error("Error extracting JSON\n" + err)
   }
   return completion
 }
@@ -54,8 +52,7 @@ async function writeConv(conv) {
     await fs.writeFile(filename, JSON.stringify(conv))
   }
   catch(err) {
-    console.error(`Error writing to file ${filename}\n` + err)
-    return Error()
+    throw new Error(`Error writing to file ${filename}\n` + err)
   }
   return true
 }
@@ -78,8 +75,7 @@ async function respond(prompt, conversation) {
     completion = await extractJSON(completion)
   }
   catch(err) {
-    console.error("Error responding to prompt\n" + err)
-    return Error()
+    throw new Error("Error responding to prompt\n" + err)
   }
   return completion 
 }
@@ -99,13 +95,11 @@ async function createTicket(ticket) {
       return ret.data
     }
     else {
-      console.error("Ticket ID not returned")
-      return Error()
+      throw new Error("Ticket ID not returned")
     }
   }
   catch(err) {
-    console.error("Error creating ticket\n" + err)
-    return Error()
+    throw new Error("Error creating ticket\n" + err)
   }
 }
 
