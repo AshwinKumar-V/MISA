@@ -73,7 +73,8 @@ app.post('/chat', async (req, res) => {
         // "stop": "\n"
       })
 
-      var completion = response.data.choices[0].message.content 
+      var completion = response.data.choices[0].message.content
+      completion = completion.match(/{.*}/)[0]
       conversation.push({ role: "assistant", content: completion })
       writeConv(conversation)
       console.log("Response generated for user input")
