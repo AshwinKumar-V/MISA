@@ -81,7 +81,7 @@ async function respond(prompt, conversation) {
     console.error("Error responding to prompt\n" + err)
     return Error()
   }
-  return { completion, conversation }
+  return completion 
 }
 
 // create ticket - call ticketing microservice (POST /tickets)
