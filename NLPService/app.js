@@ -1,9 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const { Configuration, OpenAIApi } = require("openai")
 const cors = require('cors')
 const path = require('path')
-const { writeConv, createTicket } = require('./utils')
+const { writeConv, respond, createTicket } = require('./utils')
 require("dotenv").config()
 
 const app = express();
@@ -15,13 +14,6 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(bodyParser.json())
 app.use(cors({ alllowed_origins: "*" }))
 
-
-// openai configuration
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-})
-const openai = new OpenAIApi(configuration)
-let modelName = process.env.MODEL_NAME
 
 // conversation history
 const conversation = []
@@ -56,61 +48,29 @@ app.post('/chat', async (req, res) => {
       return res.sendStatus(400) // Bad request
     }
 
-    conversation.push({ role: "user", content: req.body.prompt})
-    writeConv(conversation)
-  
-    // openai api call
     try {
-      const response = await openai.createChatCompletion({
-        model: modelName,
-        messages: conversation,
-        // prompt,
-        // "max_tokens": 10,
-        // "temperature": 0.8,
-        // "n": 1,
-        // "stream": false,
-        // "logprobs": null,
-        // "stop": "\n"
-      })
+      // respond to user prompt
+      var response = await respond({ role: "user", content: req.body.prompt}, conversation)   // response = [completion, conversation]
 
-      var completion = response.data.choices[0].message.content
-      completion = completion.match(/{.*}/)[0]
-      conversation.push({ role: "assistant", content: completion })
-      writeConv(conversation)
+      // if ticket requested
+      if (response.completion.action == "ticket") {
+
+        // create ticket
+        var ticket = await createTicket(response.completion.ticket)
+        console.log("Ticket generated with ID: " + ticket.ticket_id)
+
+        // respond to ticket confirmation
+        response = await respond({ role: "system", content: "ticket_id: " + ticket.ticket_id }, response.conversation)
+      }
+
+      data.response = response.completion
       console.log("Response generated for user input")
-
-      // ticketing integration
-      try {
-        completion = JSON.parse(completion) 
-        data.response = completion
-
-        if (completion.action == "ticket") {
-
-          // create ticket
-          const ticket_id = await createTicket(completion.ticket)
-          conversation.push({ role: "system", content: "ticket_id: " + ticket_id })
-          writeConv(conversation)
-
-          // generate response for ticket creation
-          const response = await openai.createChatCompletion({
-            model: modelName,
-            messages: conversation,
-          })
-    
-          var completion2 = response.data.choices[0].message.content 
-          conversation.push({ role: "assistant", content: completion2 })
-          writeConv(conversation)
-          data.response = completion2
-        }
-      }
-      catch(err) {
-        console.error("Error parsing JSON response\n" + err)
-      }
-    } 
-    catch (err) {
-      console.error("Error responding to user input\n" + err)
-      return res.sendStatus(500) // Internal server issue
     }
+    catch(err) {
+      console.error("Error responding to user\n" + err)
+      return res.sendStatus(500)  // Internal server error
+    }
+
     return res.json(data)
 })
 

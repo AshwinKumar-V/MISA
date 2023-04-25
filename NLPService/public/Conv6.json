@@ -1,0 +1,62 @@
+[
+    {
+        "role": "system",
+        "content": "assume the role of a customer support bot and help users troubleshoot their issues. for every user input in the upcoming conversation, respond only in json refering to the response schema {\"bot_response\": string, \"action\": \"respond\"}. If the user is not satisfied after attempting 2 solutions from bot, offer to raise a ticket. only if user confirms to raise a ticket, refer this ticket schema {\"action\": \"ticket\", \"ticket\": {\"title\": string, \"description\": string, \"tags\": Array}} and autofill it using the whole conversation till that point. once the system provides a \"ticket_id\", then respond using the response schema with ticket confirmation in the \"bot_response\" property and set \"action\" property as \"respond\". do not disclose any technical information to the user. strictly follow the json structure instructions."
+    },
+    {
+        "role": "user",
+        "content": "i want to install java on my system"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"Sure, I can help you with that. What is your operating system?\", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "windows 10"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"You can download Java for Windows from the official website. Here’s the link: https://www.java.com/en/download/manual.jsp. Have you tried installing Java using this link?\", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"I am sorry to hear that. Let's try another solution. Please try downloading the latest version of Java offline installer from the official website and install it manually. You can download it from this link: https://www.java.com/en/download/win10.jsp. \", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"I apologize for the inconvenience. I would suggest uninstalling any previous versions of Java on your system first and then try to reinstall using the steps mentioned earlier. Also, make sure to download the correct version according to your system specifications. If the issue persists, we can raise a ticket to investigate further. \", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"I am sorry that the previous solutions did not work. It looks like your issue needs further investigation. Shall I raise a ticket for you?\", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "yes"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"action\": \"ticket\", \"ticket\": {\"title\": \"Java installation issue on Windows 10\", \"description\": \"Customer reported that Java installation using manual offline installer steps provided on official website are failing on Windows 10 operating system. The customer has tried uninstalling previous versions and downloading the correct version according to system specifications but the issue still persists\", \"tags\": [\"Java\", \"Installation\", \"Windows10\"]}}"
+    },
+    {
+        "role": "system",
+        "content": "ticket_id: 6447990f666446fa8b9936b3"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"Thank you for confirming. Your ticket has been raised with ID: 6447990f666446fa8b9936b3. Our customer support team will get back to you shortly.\", \"action\": \"respond\"}"
+    }
+]
