@@ -63,7 +63,7 @@ app.post('/chat', async (req, res) => {
       completion = await respond({ role: "system", content: "ticket_id: " + ticket.ticket_id }, conversation)
     }
 
-    data.response = completion
+    data.response = completion.bot_response
     console.log("Response generated for user input")
   }
   catch(err) {

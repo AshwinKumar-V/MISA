@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
 
@@ -10,40 +10,50 @@ import { lastValueFrom } from 'rxjs';
 export class ChatComponent implements OnInit {
 
   message: string = ''
-  time: string = ''
+  isBotTyping: boolean = false
   history: Array<{
     role: string,
     text: string,
-    time: Date
+    time: Date,
+    error?: string
   }> = [];
 
   constructor(
     private http: HttpClient) {}
 
   ngOnInit(): void {
-    this.history.splice(0, this.history.length)
+    this.history.push({role: "assistant", text: "Hey, how can I help you?", time: new Date(), error: undefined})
   }
 
   async sendMessage() {
-    this.history.push({role: "user", text: this.message, time: new Date()})
-    this.history.push({role: "assistant", text: 'Typing...', time: new Date()})
+    this.history.push({role: "user", text: this.message, time: new Date(), error: undefined})
+    this.history.push({role: "assistant", text: 'Typing...', time: new Date(), error: undefined})
+    this.message = ''
+    this.isBotTyping = true
 
     // get response from NLP service
     try{
-      var data = await lastValueFrom(this.http.post("http://127.0.0.1:3000/ask", {prompt: this.message}))
-      if ((data as any).success) {
+      var headers = new HttpHeaders().set('user_id', "u123")
+      var response = await lastValueFrom(this.http.post("http://localhost:8000/chat", {prompt: this.message}, { headers: headers }))
+      if (response) {
         this.history.pop()
-        this.history.push({role: "assistant", text: (data as any).message, time: new Date()})
+        this.history.push({role: "assistant", text: (response as any).response, time: new Date()})
       }
       else {
-        console.error("Server error.")
+        this.history.pop()
+        var last: any = this.history.pop()
+        last.error = "Try again!"
+        this.history.push(last)
       }
     }
-    catch(err) {
-      console.error("Server error.")
+    catch(err:any) {
+      this.history.pop()
+      var last: any = this.history.pop()
+      last.error = err.statusText
+      this.history.push(last)
     }
 
-    this.message = ''
+    this.isBotTyping = false
   }
 
 
