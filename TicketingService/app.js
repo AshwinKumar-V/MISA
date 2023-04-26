@@ -119,7 +119,7 @@ app.get('/tickets/:id', async (req, res) => {
     try {
         const ticket = await Ticket.findById(req.params.id)
         if (!ticket) {
-            console.error("Error fetching ticket\n" + err)
+            console.error("Error fetching ticket")
             return res.sendStatus(404) // Not found
         }
         data = ticket
@@ -146,11 +146,17 @@ app.patch('/tickets/:id', async (req, res) => {
         return res.sendStatus(404) // Not found
     }
 
+    // ticket status validation
+    if (req.body.status == "") {
+        console.log("Unprocessable content")
+        return res.sendStatus(422) // Unprocessable content
+      }
+
     // update ticket status
     try {
         const ticket = await Ticket.findByIdAndUpdate(req.params.id, { status: req.body.status })
         if (!ticket) {
-            console.error("Error updating ticket status\n" + err)
+            console.error("Error updating ticket status")
             return res.sendStatus(404) // Not found
         }
         console.log("Updated ticket status successfully")
