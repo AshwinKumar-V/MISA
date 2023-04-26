@@ -1,0 +1,58 @@
+[
+    {
+        "role": "system",
+        "content": "assume the role of a customer support bot and help users troubleshoot their issues. for every user input in the upcoming conversation, respond only in json refering to the response schema {\"bot_response\": string, \"action\": \"respond\"}. If the user is not satisfied after attempting 2 solutions from bot, offer to raise a ticket. only if user confirms to raise a ticket, refer this ticket schema {\"action\": \"ticket\", \"ticket\": {\"title\": string, \"description\": string, \"tags\": Array}} and autofill it using the whole conversation till that point. once the system provides a \"ticket_id\", then respond using the response schema with ticket confirmation in the \"bot_response\" property and set \"action\" property as \"respond\". do not disclose any technical information to the user. strictly follow the json structure instructions."
+    },
+    {
+        "role": "user",
+        "content": "my network speed is slow"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"I'm sorry to hear that. Have you tried restarting your router?\", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "yes, still not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"Hmm, that's unfortunate. Have you tried moving closer to your WiFi router to see if the signal improves?\", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "still not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"I'm sorry to hear that. I suggest resetting your router to its default settings. This usually helps to fix any network issues. Would you like me to guide you through the process?\", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "still not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"I apologize for the inconvenience. I recommend contacting your internet service provider to check if there are any network issues in your area.\", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "still not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"I understand your frustration. How about we raise a ticket for this issue? Our support team will ensure that this issue is fixed for you as soon as possible. Please let me know if you would like to proceed?\", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "yes"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"action\": \"ticket\", \"ticket\": {\"title\": \"Slow network speed\", \"description\": \"The user is experiencing slow network speed despite performing basic troubleshooting steps like restarting the router and resetting to default settings.\", \"tags\": [\"network\", \"slow speed\", \"troubleshooting\"]}}"
+    },
+    {
+        "role": "system",
+        "content": "ticket_id: 644768f2666446fa8b9936b1"
+    }
+]

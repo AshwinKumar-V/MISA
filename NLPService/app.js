@@ -1,179 +1,103 @@
-//imports
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
-const { Configuration, OpenAIApi } = require("openai");
+const express = require('express')
+const bodyParser = require('body-parser')
 const cors = require('cors')
+const path = require('path')
+const { writeConv, respond, createTicket } = require('./utils')
+require("dotenv").config()
 
-//Enviroment constants configuration
-require("dotenv").config();
+const app = express();
+const port = process.env.BACKEND_PORT
 
-//Enabling JSON serialization
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-//Enabling CORS
-app.use(cors({origin: "*"}))
-
-//Connection String
-const uri = 'mongodb+srv://Sain:Sain123@projects.u014po5.mongodb.net/MISA?retryWrites=true&w=majority';
-
-// Connect to MongoDB Atlas using Mongoose
-mongoose.connect(uri, { useNewUrlParser: true })
-  .then(() => console.log('Connected to MongoDB Atlas'))
-  .catch((err) => console.error('Error connecting to MongoDB Atlas:', err));
+//middlewares
+app.use(express.static(path.join(__dirname, '/public')))
+app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.json())
+app.use(cors({ alllowed_origins: "*" }))
 
 
+// conversation history
+const conversation = []
+
+// assistant role prompt
+conversation.push({ role: "system", content: process.env.ROLE_PROMPT })
+writeConv(conversation)
+console.log("Assistant role assigned")
 
 
-//Setting up configuration key
-const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-const openai = new OpenAIApi(configuration);
-
-//To setup messaging history
-const messages=[];
-
-//Basic Model configuration
-let modelName="gpt-3.5-turbo";
-
-// create a conversation schema
-const conversationSchema = new mongoose.Schema({
-  userId: String,
-  botId: String,
-  messages: [
-    {
-      role: String,
-      content: String,
-      timestamp: {
-        type: Date,
-        default: Date.now,
-      },
-    },
-  ],
-});
-
-
-// create a conversation model
-const Conversation = mongoose.model('Conversation', conversationSchema);
-
-
-//---------------------------create a new conversation----------------
-const conversation = new Conversation({
-  userId: 'user123',
-  botId: 'bot123',
-  messages: [],
-});
-
-conversation.save()
-    .then((result) => {
-      console.log("conversation started.");
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
-    messages.push({ role: "user", content: `assume the role of a customer support bot and help users with their queries smoothly, offer to raise tickets or try to troubleshoot it yourself.` });
-
-    // openai.createChatCompletion({
-    //   model: modelName,
-    //   messages: messages,
-    // })
-    // .then((response) => {
-    //   const completion = response.data.choices[0].message.content; 
-  
-    // //json extraction
-    // completion = completion.match(/\{(?:[^{}]|(?R))*\}/g)
-    // ticket = JSON.parse(completion)
-
-    // console.log(ticket);
-
-    // var bot_response = ticket.response.message
-    // messages.push({ role: "assistant", content: bot_response });
-  // })
-  // .catch((err) => {
-  //   console.log(err);
-  // })
-
-  
-
-//---------------------------------------------------------------------
-
-app.post("/ask", async (req, res) => 
-{
-    // getting prompt question from request
-    console.log("hit on /ask");
-    const prompt = req.body.prompt;
-  
-    try {
-      if (prompt == null) {
-        throw new Error("Uh oh, no prompt was provided"); 
-      }
-      messages.push({ role: "user", content: prompt});
-      const response = await openai.createChatCompletion({
-        model: modelName,
-        messages: messages,
-        // prompt,
-        // "max_tokens": 10,
-        // "temperature": 0.8,
-        // "n": 1,
-        // "stream": false,
-        // "logprobs": null,
-        // "stop": "\n"
-      });
-
-      // retrieve the completion text from response
-    const completion = response.data.choices[0].message.content;   
-    //json extraction
-    // completion = completion.match(/\{(?:[^{}]|(?R))*\}/g)
-    // ticket = JSON.parse(completion)
-
-    // console.log(ticket);
-
-    // var bot_response = ticket.response.message
-    messages.push({ role: "assistant", content: completion });
-    
-    conversation.messages = messages.map(({role, content}) => ({role, content}))
-
-    // save the conversation to the database
-    conversation.save()
-    .then((result) => {
-      // console.log(result);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-
-
-      // return the result
-      return res.status(200).json({
-        success: true,
-        message: completion,
-      });
-    } catch (error) {
-      console.log(error.message);
-    }
-});
-
-//sample get
-app.get("/",(req,res) => 
-{
-    res.send("This is a static test message");
-    console.log("Requested hit on /");
+app.get('/', (req, res) => {
+  console.log("GET /")
+  return res.send("NLP Service running!") 
 })
 
-app.listen(3000,()=> console.log("App server started"));
+app.post('/chat', async (req, res) => {
+  console.log("POST /chat")
 
-//sample post
-app.post("/changemodel",async(req,res) =>
-{
-    const model = req.body.model;
-    if(!model)
-    {
-        return res.sendStatus(400);
+  var data = {
+    response: null
+  }
+  
+  // user validation
+  if (!req.headers.user_id) {
+    console.log("Unauthorized")
+    return res.sendStatus(401) // Unauthorized
+  }
+
+  // user prompt validation
+  if (!req.body.prompt) {
+    console.log("Bad request")
+    return res.sendStatus(400) // Bad request
+  }
+
+  try {
+    // respond to user prompt
+    var completion = await respond({ role: "user", content: req.body.prompt}, conversation)
+
+    // if ticket requested
+    if (completion.action == "ticket") {
+
+      // create ticket
+      var ticket = await createTicket(completion.ticket)
+      console.log("Ticket generated with ID: " + ticket.ticket_id)
+
+      // respond to ticket confirmation
+      completion = await respond({ role: "system", content: "ticket_id: " + ticket.ticket_id }, conversation)
     }
-    modelName = model
-    console.log("model changed to: " + modelName);
-});
+
+    data.response = completion.bot_response
+    console.log("Response generated for user input")
+  }
+  catch(err) {
+    console.error("Error responding to user\n" + err)
+    return res.sendStatus(500)  // Internal server error
+  }
+
+  return res.json(data)
+})
+
+app.delete('/chat', (req, res) => {
+  console.log("DELETE /chat")
+  
+  // user validation
+  if (!req.headers.user_id) {
+    console.log("Unauthorized")
+    return res.sendStatus(401) // Unauthorized
+  }
+
+  try {
+    if (conversation.length > 1) {
+      conversation.pop()
+      writeConv(conversation)
+      console.log("Successfully popped conversation")
+    }
+    else {
+      console.log("Empty conversation")
+    }
+  }
+  catch(err) {
+    console.error("Error popping conversation\n" + err)
+    return res.sendStatus(500)  // Internal server error
+  }
+  return res.sendStatus(204) // No content
+})
+
+app.listen(port, () => console.log(`NLP Service listening on port ${port}!`))
