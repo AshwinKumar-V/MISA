@@ -1,9 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
-const { Configuration, OpenAIApi } = require("openai")
 const cors = require('cors')
 const path = require('path')
-const axios = require('axios')
+const { writeConv, respond, createTicket } = require('./utils')
 require("dotenv").config()
 
 const app = express();
@@ -16,12 +15,14 @@ app.use(bodyParser.json())
 app.use(cors({ alllowed_origins: "*" }))
 
 
-// openai configuration
-const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-const openai = new OpenAIApi(configuration)
-let modelName = process.env.MODEL_NAME
+// conversation history
+const conversation = []
+
+// assistant role prompt
+conversation.push({ role: "system", content: process.env.ROLE_PROMPT })
+writeConv(conversation)
+console.log("Assistant role assigned")
+
 
 app.get('/', (req, res) => {
   console.log("GET /")
@@ -34,7 +35,7 @@ app.post('/chat', async (req, res) => {
   var data = {
     response: null
   }
-
+  
   // user validation
   if (!req.headers.user_id) {
     console.log("Unauthorized")
@@ -47,96 +48,56 @@ app.post('/chat', async (req, res) => {
     return res.sendStatus(400) // Bad request
   }
 
-  //Storing user message using Conversation MicroService
-  console.log("Pushing User Message");
-  const usermessage = { role: "user", content: req.body.prompt };
   try {
-    await axios.post('http://localhost:3001/writemessageuser', { usermessage })
-  } catch (err) {
-    console.error(err)
-    res.status(500).send('Error adding message')
-  }
+    // respond to user prompt
+    var completion = await respond({ role: "user", content: req.body.prompt}, conversation)
 
-  try {
+    // if ticket requested
+    if (completion.action == "ticket") {
 
-    history = [];
-    try {
-      history = await axios.get('http://localhost:3001/history');
-      console.log("Getting History");
-      console.log(history.data)
-    } catch (err) {
-      console.error(err)
-      res.status(500).send('Error getting messages')
+      // create ticket
+      var ticket = await createTicket(completion.ticket)
+      console.log("Ticket generated with ID: " + ticket.ticket_id)
+
+      // respond to ticket confirmation
+      completion = await respond({ role: "system", content: "ticket_id: " + ticket.ticket_id }, conversation)
     }
 
-    const response = await openai.createChatCompletion({
-      model: modelName,
-      messages: history.data,
-      // prompt,
-      // "max_tokens": 10,
-      // "temperature": 0.8,
-      // "n": 1,
-      // "stream": false,
-      // "logprobs": null,
-      // "stop": "\n"
-    })
-
-    const completion = response.data.choices[0].message.content
-    //Storing bot message using Conversation MicroService
-    console.log("Pushing Bot Message");
-    const botmessage = { role: "assistant", content: completion };
-    try {
-      await axios.post('http://localhost:3001/writemessagebot', { botmessage })
-    } catch (err) {
-      console.error(err)
-      res.status(500).send('Error adding message')
-    }
-
-    data.response = completion
+    data.response = completion.bot_response
     console.log("Response generated for user input")
   }
-  catch (err) {
-    console.error("Error responding to user input\n" + err)
-    return res.sendStatus(500) // Internal server issue
+  catch(err) {
+    console.error("Error responding to user\n" + err)
+    return res.sendStatus(500)  // Internal server error
   }
+
   return res.json(data)
-});
+})
 
-app.post("/pushmessageuser", async (req, res) => {
-  console.log("Requested hit on /pushmessageuser");
-  const usermessage = { role: "user", content: "Hi bot" };
-  try {
-    await axios.post('http://localhost:3001/writemessageuser', { usermessage })
-    res.send('User Message Pushed successfully')
-  } catch (err) {
-    console.error(err)
-    res.status(500).send('Error adding message')
+app.delete('/chat', (req, res) => {
+  console.log("DELETE /chat")
+  
+  // user validation
+  if (!req.headers.user_id) {
+    console.log("Unauthorized")
+    return res.sendStatus(401) // Unauthorized
   }
 
-});
-
-app.post("/pushmessagebot", async (req, res) => {
-  console.log("Requested hit on /pushmessagebot");
-  const botmessage = { role: "assistant", content: "Hi user" };
   try {
-    await axios.post('http://localhost:3001/writemessagebot', { botmessage })
-    res.send('Bot Message Pushed Successfully')
-  } catch (err) {
-    console.error(err)
-    res.status(500).send('Error adding message')
+    if (conversation.length > 1) {
+      conversation.pop()
+      writeConv(conversation)
+      console.log("Successfully popped conversation")
+    }
+    else {
+      console.log("Empty conversation")
+    }
   }
-});
-
-//Retrive Context
-app.get("/history", async (req, res) => {
-  console.log("Requested hit on /history");
-  try {
-    const response = await axios.get('http://localhost:3001/history')
-    res.json(response.data)
-  } catch (err) {
-    console.error(err)
-    res.status(500).send('Error getting messages')
+  catch(err) {
+    console.error("Error popping conversation\n" + err)
+    return res.sendStatus(500)  // Internal server error
   }
+  return res.sendStatus(204) // No content
 })
 
 app.listen(port, () => console.log(`NLP Service listening on port ${port}!`))

@@ -1,0 +1,58 @@
+[
+    {
+        "role": "system",
+        "content": "assume the role of a customer support bot and help users troubleshoot their issues. for every user input in the upcoming conversation, respond only in json response with { \"bot_response\": string, \"action\": \"respond\"}. If the user is not satisfied after attempting 2 solutions from bot, offer to raise a ticket. if user wishes to raise a ticket, refer this ticket schema {\"title\": string, \"description\": string, \"tags\": Array} and autofill it using the whole conversation till that point. only if user confirms to raise a ticket then set action as \"ticket\" and update the original json response to include the ticket schema as \"ticket\" property. once the system provides a \"ticket_id\", then respond with ticket confirmation in the json response and set \"action\" property as \"respond\". do not disclose any technical information to the user."
+    },
+    {
+        "role": "user",
+        "content": "i want to install java on my system"
+    },
+    {
+        "role": "assistant",
+        "content": "{\n  \"bot_response\": \"Sure, I can help you with that. Which operating system are you using?\", \n  \"action\": \"respond\"\n}"
+    },
+    {
+        "role": "user",
+        "content": "windows 10"
+    },
+    {
+        "role": "assistant",
+        "content": "{\n  \"bot_response\": \"You can download and install the latest version of Java from the official website. Here's the link: https://www.java.com/en/download/. Let me know if you face any issues during the installation.\", \n  \"action\": \"respond\"\n}"
+    },
+    {
+        "role": "user",
+        "content": "not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\n  \"bot_response\": \"I'm sorry to hear that. Let's try uninstalling any existing versions of Java from your system and then try installing again. You can follow these steps:\\n1. Open the Control Panel.\\n2. Click on Programs and Features.\\n3. Select Java and click the Uninstall button.\\n4. Follow the prompts to complete the uninstallation.\\n\\nOnce you have uninstalled any existing versions, try downloading and installing the latest version of Java from this link: https://www.java.com/en/download/.\", \n  \"action\": \"respond\"\n}"
+    },
+    {
+        "role": "user",
+        "content": "not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\n  \"bot_response\": \"I'm sorry to hear that the issue still persists. It could be possible that your system is running low on disk space, try freeing up some disk space and then try installing Java again. Also, check if your system meets the minimum requirements for the installation of Java. You can find the system requirements on the Java download page. Let me know if you face any issues during or after the installation.\", \n  \"action\": \"respond\"\n}"
+    },
+    {
+        "role": "user",
+        "content": "not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\n  \"bot_response\": \"I apologize for the inconvenience. It seems like the issue is beyond basic troubleshooting, would you like me to raise a ticket for you? We will have our technical team reach out to you soon.\", \n  \"action\": \"offer_ticket\"\n}"
+    },
+    {
+        "role": "user",
+        "content": "yes"
+    },
+    {
+        "role": "assistant",
+        "content": "{\n  \"bot_response\": \"Please provide the following details to raise a ticket:\\n\\nTicket Title: Unable to install Java on Windows 10\\n\\nTicket Description: I tried to install the latest version of Java on my Windows 10 system, but it failed despite trying multiple solutions provided by the bot. I need technical assistance to resolve this issue.\\n\\nTicket Tags: Java, Windows 10, Installation\\n\\nPlease confirm if you want me to create a ticket with the above details.\", \n  \"action\" : \"ticket\",\n  \"ticket\": {\n    \"title\": \"Unable to install Java on Windows 10\",\n    \"description\": \"I tried to install the latest version of Java on my Windows 10 system, but it failed despite trying multiple solutions provided by the bot. I need technical assistance to resolve this issue.\",\n    \"tags\": [\"Java\", \"Windows 10\", \"Installation\"]\n  }\n}"
+    },
+    {
+        "role": "system",
+        "content": "ticket_id: undefined"
+    }
+]

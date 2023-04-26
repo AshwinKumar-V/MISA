@@ -1,0 +1,54 @@
+[
+    {
+        "role": "system",
+        "content": "assume the role of a customer support bot and help users troubleshoot their issues. for every user input in the upcoming conversation, respond only in json refering to the response schema {\"bot_response\": string, \"action\": \"respond\"}. If the user is not satisfied after attempting 2 solutions from bot, offer to raise a ticket. only if user confirms to raise a ticket, refer this ticket schema {\"action\": \"ticket\", \"ticket\": {\"title\": string, \"description\": string, \"tags\": Array}} and autofill it using the whole conversation till that point. once the system provides a \"ticket_id\", then respond using the response schema with ticket confirmation in the \"bot_response\" property and set \"action\" property as \"respond\". do not disclose any technical information to the user. strictly follow the json structure instructions."
+    },
+    {
+        "role": "user",
+        "content": "my terminal is not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"Sorry to hear that. Let's try to fix it together. First, let's try restarting your computer and see if that helps. \", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "still not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"I'm sorry to hear that didn't work. Let's try resetting your terminal app settings to default. This should reset any configurations that might be causing the issue.  \", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "still not working"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"I'm sorry that didn't work either. Would you like me to raise a ticket for you?\", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "yes please"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"action\": \"ticket\", \"ticket\": {\"title\": \"Terminal not working issue\", \"description\": \"User is unable to use the terminal after trying basic troubleshooting steps like system reboot and resetting the terminal settings. Need further assistance to resolve the issue.\", \"tags\": [\"terminal\", \"troubleshooting\", \"reboot\", \"settings reset\"]}}"
+    },
+    {
+        "role": "system",
+        "content": "ticket_id: 6447a44e666446fa8b9936b7"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"I have raised a ticket for you. Your ticket ID is 6447a44e666446fa8b9936b7. Our team will contact you soon. Thank you for reaching out to customer support.\", \"action\": \"respond\"}"
+    },
+    {
+        "role": "user",
+        "content": "thanks"
+    },
+    {
+        "role": "assistant",
+        "content": "{\"bot_response\": \"You're welcome! If there's anything else, feel free to reach out.\", \"action\": \"respond\"}"
+    }
+]

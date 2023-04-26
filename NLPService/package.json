@@ -1,7 +1,7 @@
 {
-  "name": "openaidemo",
+  "name": "nlp-service",
   "version": "1.0.0",
-  "description": "This is a demonstration for openai chat",
+  "description": "This is the NLP service for MISA project.",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -10,10 +10,12 @@
   "author": "Sain Saji",
   "license": "ISC",
   "dependencies": {
+    "axios": "^1.3.6",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "fs": "^0.0.1-security",
     "openai": "^3.2.1",
     "path": "^0.12.7"
   }
