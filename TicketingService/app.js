@@ -147,9 +147,9 @@ app.patch('/tickets/:id', async (req, res) => {
     }
 
     // ticket status validation
-    if (req.body.status == "") {
-        console.log("Unprocessable content")
-        return res.sendStatus(422) // Unprocessable content
+    if (!req.body.status) {
+        console.log("Bad request")
+        return res.sendStatus(400) // Bad request
       }
 
     // update ticket status

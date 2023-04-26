@@ -47,19 +47,17 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING)
 // mongo - message schema
 const messageSchema = new mongoose.Schema({
   role: { type: String, required: true },
-  content: { type: String, required: true },
-  feedback: { type: String }
+  content: { type: String, required: true }
 });
 
 // mongo - conversation model
 const Conversation = mongoose.model('conversation', new mongoose.Schema({
   user_id: { type: String, required: true },
   bot_id: { type: String, required: true },
-  title: { type: String, required: true },
+  title: { type: String },
   start_time: { type: Date, required: true },
   end_time: { type: Date, required: true },
-  feedback: { type: String },
-  messages: [messageSchema],
+  messages: [messageSchema]
 }));
    
 
@@ -100,12 +98,14 @@ app.post("/conversations", async (req, res) => {
       title: "",
       start_time: new Date(),
       end_time: new Date(),
-      feedback: null,
-      messages: []
+      messages: [ {
+        role: 'system',
+        content: process.env.ROLE_PROMPT
+      }]
     });
 
-    const conversation_id = await conversation.save()
-    data.conversation_id = conversation_id
+    const conversation_res = await conversation.save()
+    data.conversation_id = conversation_res.id
     console.log('Conversation created successfully');
   }
   catch(err) {
@@ -153,7 +153,7 @@ app.get('/conversations/:id', async (req, res) => {
   }
 
   // conversation id validation
-  if (!mongo.Types.ObjectId.isValid(req.params.id)) {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     console.log("Not found")
     return res.sendStatus(404) // Not found
   }
@@ -185,15 +185,15 @@ app.patch("/conversations/:id", async (req, res) => {
   }
 
   // conversation id validation
-  if (!mongo.Types.ObjectId.isValid(req.params.id)) {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     console.log("Not found")
     return res.sendStatus(404) // Not found
   }
 
   // conversation title validation
-  if (req.body.title == "") {
-    console.log("Unprocessable content")
-    return res.sendStatus(422) // Unprocessable content
+  if (!req.body.title) {
+    console.log("Bad request")
+    return res.sendStatus(400) // Bad request
   }
 
   // update conversation title
@@ -227,15 +227,15 @@ app.post("/conversations/:id/messages", async (req, res) => {
   }
 
   // conversation id validation
-  if (!mongo.Types.ObjectId.isValid(req.params.id)) {
+  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     console.log("Not found")
     return res.sendStatus(404) // Not found
   }
 
-  // conversation message validation
-  if (req.body.role == "" || req.body.content == "") {
-    console.log("Unprocessable content")
-    return res.sendStatus(422) // Unprocessable content
+  // conversation messages validation
+  if (!req.body.messages) {
+    console.log("Bad request")
+    return res.sendStatus(400) // Bad request
   }
 
   // append conversation messages
@@ -243,18 +243,20 @@ app.post("/conversations/:id/messages", async (req, res) => {
     const updateObject= {
       end_time: new Date(),
       $push: {
-        messages: messageSchema(req.body)
+        messages: {
+          $each: req.body.messages
+        }
       }
     }
     const conversation = await Conversation.findByIdAndUpdate(req.params.id, updateObject)
     if (!conversation) {
-        console.error("Error adding conversation message")
+        console.error("Error adding conversation messages")
         return res.sendStatus(404) // Not found
     }
-    console.log("Conversation message added successfully")
+    console.log("Conversation messages added successfully")
   }
   catch(err) {
-      console.error("Error adding conversation message\n" + err)
+      console.error("Error adding conversation messages\n" + err)
       return res.sendStatus(500) // Internal server error
   }
   return res.sendStatus(204)  // No content
@@ -282,45 +284,6 @@ app.post("/conversations/:id/messages", async (req, res) => {
     // });
     // res.send('New Message added successfully')
 });
-
-// pop last message from conversation
-app.delete("/conversations/:id/messages", async (req, res) => {
-  console.log("DELETE /conversations/:id/messages");
-
-  // user validation
-  if (!req.headers.user_id) {
-    console.log("Unauthorized")
-    return res.sendStatus(401) // Unauthorized
-  }
-
-  // conversation id validation
-  if (!mongo.Types.ObjectId.isValid(req.params.id)) {
-    console.log("Not found")
-    return res.sendStatus(404) // Not found
-  }
-
-  // pop latest conversation message
-  try {
-    const updateObject= {
-      end_time: new Date(),
-      $pop: {
-        messages: 1
-      }
-    }
-    const conversation = await Conversation.findByIdAndUpdate(req.params.id, updateObject)
-    if (!conversation) {
-        console.error("Error popping conversation message")
-        return res.sendStatus(404) // Not found
-    }
-    console.log("Conversation message popped successfully")
-  }
-  catch(err) {
-      console.error("Error popping conversation message\n" + err)
-      return res.sendStatus(500) // Internal server error
-  }
-  return res.sendStatus(204)  // No content
-});
-
 
 //Push User Message to the Context store
 // app.post("/writemessageuser", (req, res) => {
