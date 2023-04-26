@@ -48,7 +48,7 @@ mongoose.connect(process.env.MONGO_CONNECTION_STRING)
 const messageSchema = new mongoose.Schema({
   role: { type: String, required: true },
   content: { type: String, required: true }
-});
+}, { _id: false });
 
 // mongo - conversation model
 const Conversation = mongoose.model('conversation', new mongoose.Schema({

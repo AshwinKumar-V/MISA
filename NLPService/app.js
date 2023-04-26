@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const path = require('path')
-const { writeConv, respond, createTicket } = require('./utils')
+const { respond, createTicket, getConversation, updateConversation } = require('./utils')
 require("dotenv").config()
 
 const app = express();
@@ -15,23 +15,15 @@ app.use(bodyParser.json())
 app.use(cors({ alllowed_origins: "*" }))
 
 
-// conversation history
-const conversation = []
-
-// assistant role prompt
-conversation.push({ role: "system", content: process.env.ROLE_PROMPT })
-writeConv(conversation)
-console.log("Assistant role assigned")
-
-
 app.get('/', (req, res) => {
   console.log("GET /")
   return res.send("NLP Service running!")
 })
 
-app.post('/chat', async (req, res) => {
-  console.log("POST /chat")
+app.post('/chat/:id', async (req, res) => {
+  console.log("POST /chat/:id")
 
+  var message_count = 0
   var data = {
     response: null
   }
@@ -49,21 +41,30 @@ app.post('/chat', async (req, res) => {
   }
 
   try {
+    // fetch conversation based on id
+    var conversation = await getConversation(req.params.id)
+
     // respond to user prompt
     var completion = await respond({ role: "user", content: req.body.prompt}, conversation)
+    message_count += 2
 
     // if ticket requested
     if (completion.action == "ticket") {
 
       // create ticket
       var ticket = await createTicket(completion.ticket)
-      console.log("Ticket generated with ID: " + ticket.ticket_id)
+      console.log("Ticket generated")
 
       // respond to ticket confirmation
       completion = await respond({ role: "system", content: "ticket_id: " + ticket.ticket_id }, conversation)
+      message_count += 2
     }
 
     data.response = completion.bot_response
+
+    // update conversation messages
+    await updateConversation(req.params.id, conversation.slice(-message_count))
+
     console.log("Response generated for user input")
   }
   catch(err) {
@@ -72,32 +73,6 @@ app.post('/chat', async (req, res) => {
   }
 
   return res.json(data)
-})
-
-app.delete('/chat', (req, res) => {
-  console.log("DELETE /chat")
-  
-  // user validation
-  if (!req.headers.user_id) {
-    console.log("Unauthorized")
-    return res.sendStatus(401) // Unauthorized
-  }
-
-  try {
-    if (conversation.length > 1) {
-      conversation.pop()
-      writeConv(conversation)
-      console.log("Successfully popped conversation")
-    }
-    else {
-      console.log("Empty conversation")
-    }
-  }
-  catch(err) {
-    console.error("Error popping conversation\n" + err)
-    return res.sendStatus(500)  // Internal server error
-  }
-  return res.sendStatus(204) // No content
 })
 
 app.listen(port, () => console.log(`NLP Service listening on port ${port}!`))
