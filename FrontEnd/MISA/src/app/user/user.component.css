@@ -1,0 +1,14 @@
+.main{
+    background-color: azure;
+    grid-area: M;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(12,50px);
+    padding-left: 30px;
+    padding-right: 30px;
+    height: 100vh;
+}
+
+.input-group{
+    grid-row: 12; 
+}

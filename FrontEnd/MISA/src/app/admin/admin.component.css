@@ -1,0 +1,53 @@
+.admin-panel{
+    background-color:f5e0e0;
+    grid-area: M;
+    display: grid;
+    height: 100vh;
+    grid-template-columns: 900px 1fr;
+    grid-template-rows: 80px 1fr;
+    grid-template-areas: 
+    "toolpanel toolpanel"
+    "ticketarea otherinfo";
+}
+
+.toolpanel{
+    grid-area: toolpanel;
+    background-color: #ffd2d2;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: repeat(10,50px);
+    padding-left: 100px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    gap:100px;
+}
+
+.tool{
+    background-color:#ffd2d2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width:100px;
+    border-radius: 10px;
+    background: linear-gradient(145deg, #ffd2d2, #dab0b0);
+    box-shadow:  13px 13px 25px #a28383,
+                -13px -13px 25px #ffffff;
+}
+
+.ticketarea{
+    grid-area: ticketarea;
+    /* background-color: #f8ecec; */
+    background-image: url("https://wallpapercave.com/wp/wp2647032.jpg");
+    background-size: cover;
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr;
+}
+.test{
+    padding: 50px;
+    margin: 50px;
+    border-radius: 10px;
+    background-color: rgba(109, 199, 248, 0.3);
+    backdrop-filter: blur(10px) saturate(0.56);
+    border-radius: 23px;
+}

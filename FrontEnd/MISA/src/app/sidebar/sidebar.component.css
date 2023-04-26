@@ -1,0 +1,24 @@
+.sidebar{
+    background-color: #d4c4c4;
+    grid-area: S;
+    display: grid;
+    height: 100vh;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(10,50px);
+    padding-top: 100px;
+    padding-left: 10px;
+    padding-right: 10px;
+    gap: 10px;
+    
+}
+
+.card{
+    border-radius: 10px;
+    background: #d4c4c4;
+    box-shadow:  5px 5px 10px #8e8383,
+                -5px -5px 10px #ffffff;
+}
+
+.card:last-child {
+    grid-row: 10;
+  }
