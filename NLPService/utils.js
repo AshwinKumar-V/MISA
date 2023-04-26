@@ -1,4 +1,3 @@
-const fs = require('fs').promises
 const axios = require('axios')
 const { Configuration, OpenAIApi } = require("openai")
 
@@ -45,31 +44,17 @@ async function extractJSON(completion) {
   return completion
 }
 
-// write conversation to file
-async function writeConv(conv) {
-  const filename = process.env.FILE_NAME
-  try {
-    await fs.writeFile(filename, JSON.stringify(conv))
-  }
-  catch(err) {
-    throw new Error(`Error writing to file ${filename}\n` + err)
-  }
-  return true
-}
-
 // respond to input prompt
 async function respond(prompt, conversation) {
   try {
     // add input prompt to conversation
     conversation.push(prompt)
-    writeConv(conversation)
   
     // openai api call
     var completion = await callOpenAI(conversation)
 
     // add bot response to conversation
     conversation.push({ role: "assistant", content: completion })
-    writeConv(conversation)
 
     // extract JSON from response
     completion = await extractJSON(completion)
@@ -80,7 +65,7 @@ async function respond(prompt, conversation) {
   return completion 
 }
 
-// create ticket - call ticketing microservice (POST /tickets)
+// create ticket - call ticketing service (POST /tickets)
 async function createTicket(ticket) {
   try {
     var options = {
@@ -103,5 +88,45 @@ async function createTicket(ticket) {
   }
 }
 
+// get conversation - call conversation service (GET /conversations/:id)
+async function getConversation(id) {
+  try {
+    var options = {
+      headers: {
+        "Content-Type": "application/json",
+        "user_id": "u123"
+      }
+    }
 
-module.exports = { writeConv, respond, createTicket }
+    const ret = await axios.get(`${process.env.CONVERSATION_ADDRESS}/conversations/${id}`, options)
+    if (ret) {
+      return ret.data.messages
+    }
+    else {
+      throw new Error("Conversation not found")
+    }
+  }
+  catch(err) {
+    throw new Error("Error fetching conversation\n" + err)
+  }
+}
+
+// update conversation messages - call conversation service (POST /conversations/:id/messages)
+async function updateConversation(id, new_messages) {
+  try {
+    var options = {
+      headers: {
+        "Content-Type": "application/json",
+        "user_id": "u123"
+      }
+    }
+
+    await axios.post(`${process.env.CONVERSATION_ADDRESS}/conversations/${id}/messages`, { messages: new_messages }, options)
+  }
+  catch(err) {
+    throw new Error("Error updating conversation messages\n" + err)
+  }
+  return
+}
+
+module.exports = { respond, createTicket, getConversation, updateConversation }
