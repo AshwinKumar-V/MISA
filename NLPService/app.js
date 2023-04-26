@@ -10,7 +10,7 @@ const port = process.env.BACKEND_PORT
 
 //middlewares
 app.use(express.static(path.join(__dirname, '/public')))
-app.use(bodyParser.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use(cors({ alllowed_origins: "*" }))
 
@@ -26,7 +26,7 @@ console.log("Assistant role assigned")
 
 app.get('/', (req, res) => {
   console.log("GET /")
-  return res.send("NLP Service running!") 
+  return res.send("NLP Service running!")
 })
 
 app.post('/chat', async (req, res) => {
