@@ -7,5 +7,12 @@ body{
     margin:0px;
     height: 100vh;
 }
-
-
+.holder{
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 80px 250px 1fr;
+    grid-template-rows: 60px 1fr;
+    grid-template-areas: 
+    "S L M"
+    "S L M";
+}
