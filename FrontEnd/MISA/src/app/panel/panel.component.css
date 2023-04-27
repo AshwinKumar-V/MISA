@@ -3,8 +3,8 @@
     grid-area: L;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    padding: 30px 20px;
+    height: 96vh;
+    padding: 30px 20px 0px;
     gap: 10px;
 }
 .new-issue-box{
