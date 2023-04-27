@@ -8,4 +8,14 @@
     "S L M";
 }
 
+.full_height, .full_height > *{
+    height: 100vh;
+}
+
+.main{
+    width: 75vw;
+    height: 100vh;
+}
+
+
 

@@ -1,45 +1,44 @@
-.issue-list{
+.panel{
     background-color:#f0f1ea;
-    grid-area: L;
-    display: flex;
-    flex-direction: column;
-    height: 96vh;
-    padding: 30px 20px 0px;
-    gap: 10px;
-    
+    /* grid-area: L; */
+    /* display: flex;
+    flex-direction: column; */
+    width: 15vw;
+    height: 100vh;
+    justify-content: flex-start;
+    /* gap: 10px; */
 }
-.new-issue-box{
+
+.panel_item {
     background-color: #ffffff;
-    display: flex;
-    flex-direction: row;
-    justify-content:left;
-    align-items: center;
-    height: 35px; /* Set the height of the box */
     border-radius: 10px;  
-    gap:35px;
-    padding-left: 20px;
-    
+    padding: 10px 15px;  
+    margin-bottom: 10px;
+    border-radius: 10px;
+    width: 80%;
 }
 
-.issue-history-box{
-    background-color: #ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 35px; /* Set the height of the box */
-    border-radius: 10px;    
-    
+.new_item{
+    justify-content: flex-start;
+    margin: 20px 0;
 }
 
+.material-symbols-outlined{
+    margin-right: 10px;
+}
 
+span{
+    font-size: 0.7rem;
+    margin: 15px 10px;
+}
 
-.center-text {
+/* .center-text {
     text-align: center;
   }
 
 .center-text-no-issue {
     margin: 15px 10px;
     font-size: 0.9rem;
-}
+} */
 
 

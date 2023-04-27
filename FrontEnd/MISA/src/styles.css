@@ -18,3 +18,19 @@ body{
     "S L M"
     "S L M";
 }
+
+
+.flex_row_center_between, .flex_column_center_between{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex_column_center_between{
+    flex-direction: column;
+}
+
+.material-symbols-outlined:hover{
+    cursor: pointer;
+}
