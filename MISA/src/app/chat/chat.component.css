@@ -115,3 +115,7 @@ span {
 .error_span{
     color: red;
 }
+
+li:hover, .btn:hover{
+    cursor: pointer;
+}

@@ -11,12 +11,17 @@ export class ChatComponent implements OnInit{
   message: string = ''
   isBotTyping: boolean = false
   history: any
+  all_conversations: any
 
   constructor( private chat: ChatService ) {}
 
   ngOnInit(): void {    
     this.chat.history.subscribe({
       next: (data) => this.history = data,
+      error: (err) => console.error(err)
+    })
+    this.chat.all_conversations.subscribe({
+      next: (data) => this.all_conversations = data,
       error: (err) => console.error(err)
     })
   }
@@ -29,6 +34,14 @@ export class ChatComponent implements OnInit{
     await this.chat.getResponse(msg)
 
     this.isBotTyping = false
+  }
+
+  newChat() {
+    this.chat.createConversation()
+  }
+
+  changeConversation(id: string) {
+    this.chat.conversation_id.next(id)
   }
 
 }

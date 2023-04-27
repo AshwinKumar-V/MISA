@@ -8,8 +8,8 @@ import { environment } from 'src/environments/environment.development';
 })
 export class ChatService{
 
-  conversation_id = new BehaviorSubject<string>("644a004a4253d9813ba0b8cd")
-  all_conversations: Array<object> = []
+  conversation_id = new BehaviorSubject<string>("")
+  all_conversations = new BehaviorSubject<Array<object>>([])
   history = new BehaviorSubject<Array<{
     role: string,
     content: string,
@@ -32,18 +32,16 @@ export class ChatService{
   // create new conversation
   async createConversation() {
     try {
-      var headers = new HttpHeaders().set("user_id", "u123")
-      var response = await lastValueFrom(this.http.post(`${environment.CONVERSATION_SERVICE_ADDRESS}/conversations`, { headers: headers }))
+      var headers = new HttpHeaders().set("user_id", "u123")      
+      var response = await lastValueFrom(this.http.post(`${environment.CONVERSATION_SERVICE_ADDRESS}/conversations`, null, { headers: headers }))
       if (!response) {
         console.error("Error creating new conversation")
         return
       }
 
-      // clear local history
-      this.history.next([{role: "assistant", content: "Hey, how can I help you?"}])
-
       await this.getAllConversations()
       this.conversation_id.next((response as any).conversation_id)
+      
     }
     catch(err:any) {
       console.error("Error creating new conversation")
@@ -60,7 +58,7 @@ export class ChatService{
         console.error("Error fetching all conversations")
         return
       }
-      this.all_conversations = (response as any).conversations
+      this.all_conversations.next((response as any).conversations)
     }
     catch(err:any) {
       console.error("Error fetching all conversations")
@@ -99,7 +97,7 @@ export class ChatService{
         }
       })
 
-      this.history.next(messages)
+      this.history.next([{role: "assistant", content: "Hey, how can I help you?"}].concat(...messages))
     }
     catch(err:any) {
       console.error("Error fetching conversation")
@@ -149,6 +147,5 @@ export class ChatService{
       return
     }
   }
-
 
 }
