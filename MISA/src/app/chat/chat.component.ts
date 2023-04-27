@@ -1,50 +1,47 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { ChatService } from '../chat.service';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit{
 
   message: string = ''
-  time: string = ''
-  history: Array<{
-    role: string,
-    text: string,
-    time: Date
-  }> = [];
+  isBotTyping: boolean = false
+  history: any
+  all_conversations: any
 
-  constructor(
-    private http: HttpClient) {}
+  constructor( private chat: ChatService ) {}
 
-  ngOnInit(): void {
-    this.history.splice(0, this.history.length)
+  ngOnInit(): void {    
+    this.chat.history.subscribe({
+      next: (data) => this.history = data,
+      error: (err) => console.error(err)
+    })
+    this.chat.all_conversations.subscribe({
+      next: (data) => this.all_conversations = data,
+      error: (err) => console.error(err)
+    })
   }
 
   async sendMessage() {
-    this.history.push({role: "user", text: this.message, time: new Date()})
-    this.history.push({role: "assistant", text: 'Typing...', time: new Date()})
-
-    // get response from NLP service
-    try{
-      var data = await lastValueFrom(this.http.post("http://127.0.0.1:3000/ask", {prompt: this.message}))
-      if ((data as any).success) {
-        this.history.pop()
-        this.history.push({role: "assistant", text: (data as any).message, time: new Date()})
-      }
-      else {
-        console.error("Server error.")
-      }
-    }
-    catch(err) {
-      console.error("Server error.")
-    }
-
+    var msg = this.message
     this.message = ''
+    this.isBotTyping = true
+
+    await this.chat.getResponse(msg)
+
+    this.isBotTyping = false
   }
 
+  newChat() {
+    this.chat.createConversation()
+  }
+
+  changeConversation(id: string) {
+    this.chat.conversation_id.next(id)
+  }
 
 }

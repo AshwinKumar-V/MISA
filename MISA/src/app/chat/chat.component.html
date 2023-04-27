@@ -1,23 +1,36 @@
 
 <div class="chat_wrapper">
-    <div class="chat_header">
+    <div class="chat_header d-flex justify-content-between align-items-center">
         <div class="profile">
             <img src="..\..\assets\img\icons8-female-user.svg" alt="">
             <h3 class="bot_name">MISA</h3>
+        </div>
+
+        <button type="button" class="btn btn-primary" (click)="newChat()">New chat</button>
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+            Conversations
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <li *ngFor="let conv of all_conversations" (click)="changeConversation(conv._id)"><a class="dropdown-item">{{conv.title}}</a></li>
+          </ul>
         </div>
     </div>
 
     <div class="chat_screen">
         <ul>
             <li *ngFor="let message of history">
-                <div class="d-flex flex-column" [ngClass]="message.role == 'user'? 'user': 'assistant'">{{message.text}}</div>
-                <span>{{message.time | date: 'shortTime'}}</span>
+                <div class="d-flex flex-column" [ngClass]="message.role == 'user'? 'user': 'assistant'">{{message.content}}</div>
+                <span>
+                    <!-- <div>{{message.time | date: 'shortTime'}}</div> -->
+                    <div class="error_span">{{message.error}}</div>
+                </span>
             </li>
         </ul>
     </div>
 
     <div class="chat_textbar">
-        <input type="text" id="message" name="message" [(ngModel)]="message">
+        <input type="text" id="message" name="message" [(ngModel)]="message" [disabled]="isBotTyping">
         <div class="sendBtn" (click)="sendMessage()">
             <img src="../../assets/img/icons8-send-48.png" alt="send btn">
         </div>
