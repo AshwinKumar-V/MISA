@@ -1,14 +1,25 @@
 .main{
     background-color: azure;
     grid-area: M;
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(12,50px);
-    padding-left: 30px;
-    padding-right: 30px;
+    display: flex;
     height: 100vh;
+    align-items: center;
+    justify-content: center;
 }
 
-.input-group{
-    grid-row: 12; 
+.conversation-inputs{
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content:left;
+    align-items: center;
+    height: 35px; /* Set the height of the box */
+    border-radius: 10px;  
+    padding-left: 20px;
+    padding-right: 10px;
+    gap:600px;
+    box-shadow:  5px 5px 10px #bebebe,
+             -5px -5px 10px #ffffff;
+    margin-top: 600px;
 }
+

@@ -1,28 +1,49 @@
-.message-list{
-    background-color:#fafafa;
+.issue-list{
+    background-color:#f0f1ea;
     grid-area: L;
-    display: grid;
+    display: flex;
+    flex-direction: column;
     height: 100vh;
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(10,50px);
-    padding-top: 50px;
     padding-left: 10px;
     padding-right: 10px;
     gap: 10px;
 }
+.new-issue-box{
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: row;
+    justify-content:left;
+    align-items: center;
+    height: 50px; /* Set the height of the box */
+    border-radius: 10px;  
+    gap:35px;
+    padding-left: 20px;
+    box-shadow:  5px 5px 10px #bebebe,
+             -5px -5px 10px #ffffff;
+}
 
-.message-history-box{
-    background-color: #fafafa;
+.issue-history-box{
+    background-color: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 50px; /* Set the height of the box */
-    border-radius: 10px;
-    background: #fafafa;
-    box-shadow:  12px 12px 24px #a8a8a8,
-                -12px -12px 24px #ffffff;
+    border-radius: 10px;    
+    box-shadow:  5px 5px 10px #bebebe,
+             -5px -5px 10px #ffffff;
 }
+
+.issue-list::before {
+    content: '';
+    height: 50px;
+  }
 
 .center-text {
     text-align: center;
   }
+
+  .center-text-no-issue {
+    text-align:justify;
+  }
+
+
