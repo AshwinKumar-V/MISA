@@ -95,7 +95,7 @@ app.post("/conversations", async (req, res) => {
     const conversation = new Conversation({
       user_id: req.headers.user_id,
       bot_id: "b123",
-      title: "",
+      title: "New Issue",
       start_time: new Date(),
       end_time: new Date(),
       messages: [ {
@@ -128,9 +128,9 @@ app.get('/conversations', async (req, res) => {
     return res.sendStatus(401) // Unauthorized
   }
 
-  // get all conversations
+  // get all conversations (only id and title)
   try {
-    const conversations = await Conversation.find()
+    const conversations = await Conversation.find().select('title')
     data.conversations = conversations
     console.log("Fetched all conversations successfully")
   }
