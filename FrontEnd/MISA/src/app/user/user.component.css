@@ -7,14 +7,15 @@
     justify-content: center;
 } */
 
-.user {
+.chat_area {
     background-color: azure; 
     height: 100%;
 }
 
 .chat_history{
-    height: 80vh;
-    background-color: blue;
+    height: 84vh;
+    width: 100%;
+    overflow-y: scroll;
 }
 
 .textbar{
@@ -50,3 +51,47 @@ input, input:focus{
     margin-top: 600px;
 } */
 
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+li {
+    list-style: none;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 2rem 3rem;
+}
+
+.user > * {
+    align-self: flex-end;
+}
+
+.assistant {
+    background-color: #f9f3f3;
+}
+
+.chat_history span {
+    font-size: .8rem;
+    color: gray;
+    display: flex;
+    flex-direction: column;
+}
+
+.user + span{
+    align-items: flex-end;
+}
+
+.error_span{
+    color: red;
+    font-size: 0.7rem;
+}
+
+li:hover, .btn:hover{
+    cursor: pointer;
+}

@@ -18,6 +18,10 @@
     width: 80%;
 }
 
+.panel_item:hover{
+    cursor: pointer;
+}
+
 .new_item{
     justify-content: flex-start;
     margin: 20px 0;

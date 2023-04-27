@@ -1,4 +1,5 @@
-import { Component, ViewEncapsulation } from '@angular/core';
+import { Component } from '@angular/core';
+import { ChatService } from '../chat.service';
 
 @Component({
   selector: 'app-user',
@@ -7,4 +8,26 @@ import { Component, ViewEncapsulation } from '@angular/core';
 })
 export class UserComponent {
 
+  message: string = ''
+  isBotTyping: boolean = false
+  history: any
+
+  constructor( private chat: ChatService ) {}
+
+  ngOnInit(): void {    
+    this.chat.history.subscribe({
+      next: (data) => this.history = data,
+      error: (err) => console.error(err)
+    })
+  }
+
+  async sendMessage() {
+    var msg = this.message
+    this.message = ''
+    this.isBotTyping = true
+
+    await this.chat.getResponse(msg)
+
+    this.isBotTyping = false
+  }
 }
