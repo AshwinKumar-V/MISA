@@ -6,8 +6,7 @@
     flex-direction: column;
     height: 100vh;
     /* padding-top: 100px; */
-    padding-left: 25px;
-    padding-right: 10px;
+    padding: 25px;
 }
 
 .sidebar::before {
@@ -17,7 +16,7 @@
 
 .material-symbols-outlined {
     color: rgb(254, 254, 254);
-    font-size: 25px;
+    font-size: 32px;
     /* flex:1; */
     font-variation-settings:
     'FILL' 0,
@@ -25,6 +24,30 @@
     'GRAD' 0,
     'opsz' 48
   }
+
+.selected{
+  color: #06168f;
+  position: relative;
+  z-index: 1;
+}
+.selected::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% + 25px);
+  height: calc(100% + 25px);
+  border-radius: 10px;
+  background-color: white;
+  z-index: -1;
+}
+  .material-symbols-outlined:hover{
+    cursor: pointer;
+  }
+
+  
+
 
 .material-symbols-outlined:nth-child(3),
 .material-symbols-outlined:nth-child(4) {

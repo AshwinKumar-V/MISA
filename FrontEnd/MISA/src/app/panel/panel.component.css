@@ -4,8 +4,7 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 30px 20px;
     gap: 10px;
 }
 .new-issue-box{
@@ -14,12 +13,11 @@
     flex-direction: row;
     justify-content:left;
     align-items: center;
-    height: 50px; /* Set the height of the box */
+    height: 35px; /* Set the height of the box */
     border-radius: 10px;  
     gap:35px;
     padding-left: 20px;
-    box-shadow:  5px 5px 10px #bebebe,
-             -5px -5px 10px #ffffff;
+    
 }
 
 .issue-history-box{
@@ -27,23 +25,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 50px; /* Set the height of the box */
+    height: 35px; /* Set the height of the box */
     border-radius: 10px;    
-    box-shadow:  5px 5px 10px #bebebe,
-             -5px -5px 10px #ffffff;
+    
 }
 
-.issue-list::before {
-    content: '';
-    height: 50px;
-  }
+
 
 .center-text {
     text-align: center;
   }
 
-  .center-text-no-issue {
-    text-align:justify;
-  }
+.center-text-no-issue {
+    margin: 15px 10px;
+    font-size: 0.9rem;
+}
 
 
