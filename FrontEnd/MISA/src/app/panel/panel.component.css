@@ -7,6 +7,8 @@
     height: 100vh;
     justify-content: flex-start;
     /* gap: 10px; */
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .panel_item {

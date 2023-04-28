@@ -10,8 +10,6 @@ import { TicketService } from '../ticket.service';
 })
 export class PanelComponent implements OnInit{
 
-  list1: any
-  list2: any
   list: any
   role: string = ''
 
@@ -22,12 +20,12 @@ export class PanelComponent implements OnInit{
 
   ngOnInit(): void {
     this.chat.all_conversations.subscribe({
-      next: (data) => this.list1 = data,
+      next: (data) => this.list = data,
       error: (err) => console.error(err)
     })
 
     this.ticket.all_tickets.subscribe({
-      next: (data) => this.list2 = data,
+      next: (data) => this.list = data,
       error: (err) => console.error(err)
     })
 
@@ -35,14 +33,13 @@ export class PanelComponent implements OnInit{
       next: (event) => {
         if (event instanceof NavigationEnd) {
           console.log(event.url);
-          
           this.role = event.url
 
           if(this.role == '/user'){
-            this.list = this.chat.all_conversations
+            this.chat.getAllConversations()
           }
           else {
-            this.list = this.ticket.all_tickets
+            this.ticket.getAllTickets()
           }
         }
       },
