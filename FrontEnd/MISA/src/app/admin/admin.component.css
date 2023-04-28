@@ -68,6 +68,16 @@
     margin-bottom: 10px;
 }
 
+.default_text{
+    font-size: 1rem;
+    color: #7c7c7c;
+    margin: 20px;
+}
+
+.content_wrapper h5{
+    font-weight: 300;
+}
+
 .curr_ticket {
     justify-content: flex-start;
     box-sizing: border-box;

@@ -30,7 +30,9 @@
         </div>
     </div>
     <div class="flex_row_center_between content_wrapper">
+        
         <div class="ticketarea flex_column_center_between">
+            <span class="default_text" *ngIf="curr_ticket.user_id == null">Select a ticket to start...</span>
             <div *ngIf="curr_ticket.user_id != null" class="curr_ticket">
                 <h1>{{curr_ticket.title}}</h1>
                 <h5>{{curr_ticket.description}}</h5>

@@ -1,4 +1,5 @@
 <div class="chat_area flex_column_center_between">
+    <span class="default_text" *ngIf="!history[0]">Enter a text to start a conversation...</span>
     <div class="chat_history">
         <ul class="flex_column_center_between">
             <li *ngFor="let message of history" [ngClass]="message.role == 'user'? 'user': 'assistant'">
