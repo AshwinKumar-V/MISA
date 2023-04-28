@@ -42,15 +42,33 @@
 }
 
 .ticketarea{
-    grid-area: ticketarea;
+    /* grid-area: ticketarea; */
+    background-color: azure;
     /* background-color: #f8ecec; */
-    background-image: url("https://wallpapercave.com/wp/wp2647032.jpg");
+    /* background-image: url("https://wallpapercave.com/wp/wp2647032.jpg"); */
     background-size: cover;
-    display: grid;
+    /* display: grid;
     grid-template-rows: 1fr;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; */
     border-radius: 20px;
     margin-left:8px ;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.ticketarea > * {
+    margin: 10px 0;
+}
+.ticketarea h4, .ticketarea div{
+    align-self: flex-start;
+}
+.tag{
+    margin: 0 10px;
+    border-radius: 10px;
+    background-color: coral;
+    padding: 5px 10px;
+    color: white;
 }
 .test{
     padding: 50px;

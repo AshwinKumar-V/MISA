@@ -29,8 +29,12 @@
             <div class="tool-num">60</div>
         </div>
     </div>
-    <div class="ticketarea">
-        <div class="test"></div>
+    <div class="ticketarea flex_column_center_between">
+        <h1>{{curr_ticket.title}}</h1>
+        <h4>{{curr_ticket.description}}</h4>
+        <div *ngIf="curr_ticket.tags != null">Tags: 
+            <span class="tag" *ngFor="let tag of curr_ticket.tags">{{tag}}</span>
+        </div>
     </div>
     <div class="leaderboard">
         <div class="title-info">
