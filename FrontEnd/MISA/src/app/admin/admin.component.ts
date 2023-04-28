@@ -19,4 +19,7 @@ export class AdminComponent implements OnInit{
   }
 
 
+  async closeTicket(){
+    await this.ticket.updateTicketStatus('closed')
+  }
 }

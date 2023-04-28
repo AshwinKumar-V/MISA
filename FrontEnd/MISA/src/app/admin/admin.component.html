@@ -30,22 +30,15 @@
         </div>
     </div>
     <div class="ticketarea flex_column_center_between">
-        <h1>{{curr_ticket.title}}</h1>
-        <h4>{{curr_ticket.description}}</h4>
-        <h4 *ngIf="curr_ticket.user_id != null">User ID: {{curr_ticket.user_id}}</h4>
-        <div *ngIf="curr_ticket.tags != null">Tags: 
-            <span class="tag" *ngFor="let tag of curr_ticket.tags">{{tag}}</span>
-        </div>
-        <h4 type="button" *ngIf="curr_ticket.status != null" class="btn">{{curr_ticket.status}}</button>
-        <div class="dropdown">
-          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-            Status
-          </button>
-          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
+        <div *ngIf="curr_ticket.user_id != null" class="curr_ticket">
+            <h1>{{curr_ticket.title}}</h1>
+            <h5>{{curr_ticket.description}}</h5>
+            <h5>User ID: {{curr_ticket.user_id}}</h5>
+            <div>Tags: 
+                <span class="tag" *ngFor="let tag of curr_ticket.tags">{{tag}}</span>
+            </div>
+            <h5>Status: {{curr_ticket.status}}</h5>
+            <button type="button" class="btn btn-primary" [disabled]="curr_ticket.status == 'closed'" (click)="closeTicket()">Close Ticket</button>
         </div>
     </div>
     <div class="leaderboard">

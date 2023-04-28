@@ -3,12 +3,14 @@
     /* grid-area: L; */
     /* display: flex;
     flex-direction: column; */
-    width: 15vw;
+    width: 20vw;
     height: 100vh;
     justify-content: flex-start;
     /* gap: 10px; */
     overflow-y: scroll;
     overflow-x: hidden;
+    box-sizing: border-box;
+    padding: 10px;
 }
 
 .panel_item {

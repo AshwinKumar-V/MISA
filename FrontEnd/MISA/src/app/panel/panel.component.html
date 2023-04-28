@@ -10,10 +10,11 @@
 
     <!-- admin panel -->
     <div *ngIf="role == '/admin'">
-        <h1>Hello Admin</h1>
+        <h4>Hello Admin</h4>
         <br>
-        <h3>Your Assigned Tickets</h3>
+        <h6>Your Assigned Tickets</h6>
     </div>
+
 
     <div *ngFor="let item of list" class="panel_item" (click)="changeItem(item._id)">{{item.title}}</div>    
 
