@@ -1,5 +1,5 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
@@ -147,7 +147,7 @@ export class ChatService{
   async updateConversationTitle(title: string) {
     try {
       var headers = new HttpHeaders().set("user_id", "u123")
-      await lastValueFrom(this.http.patch(`${environment.CONVERSATION_SERVICE_ADDRESS}/conversations/${this.conversation_id}`, { title: title },  { headers: headers }))
+      await lastValueFrom(this.http.patch(`${environment.CONVERSATION_SERVICE_ADDRESS}/conversations/${this.conversation_id.getValue()}`, { title: title },  { headers: headers }))
       await this.getAllConversations()
     }
     catch(err:any) {

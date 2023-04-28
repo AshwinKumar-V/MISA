@@ -1,12 +1,24 @@
 <div class="panel flex_column_center_between">
-    <div class="flex_row_center_between panel_item new_item" (click)="newChat()">
+
+    <!-- user panel -->
+    <div *ngIf="role == '/user'" class="flex_row_center_between panel_item new_item" (click)="newChat()">
         <span class="material-symbols-outlined">
             add
         </span>
         <div class="center-text">New Issue</div>
     </div>
 
-    <div *ngFor="let item of list" class="panel_item" (click)="changeConversation(item._id)">{{item.title}}</div>
+    <!-- admin panel -->
+    <div *ngIf="role == '/admin'">
+        <h1>Hello Admin</h1>
+        <br>
+        <h3>Your Assigned Tickets</h3>
+    </div>
 
-    <span *ngIf="list.length == 0">You've no new issues yet. Once you've initiated a conversation, then you can access them here.</span>
+    <div *ngFor="let item of list" class="panel_item" (click)="changeItem(item._id)">{{item.title}}</div>    
+
+    <span *ngIf="(role == '/user') && (list.length == 0)">You've no new issues yet. Once you've initiated a conversation, then you can access them here.</span>    
+    <span *ngIf="(role == '/admin') && (list.length == 0)">You've no tickets assigned. Check back in a while.</span>
+
+
 </div>

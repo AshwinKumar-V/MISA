@@ -88,7 +88,7 @@ app.get('/tickets', async (req, res) => {
 
     // get all tickets
     try {
-        const tickets = await Ticket.find()
+        const tickets = await Ticket.find().select('title')
         data.tickets = tickets
         console.log("Fetched all tickets successfully")
     }
