@@ -64,7 +64,8 @@
 }
 
 .content_wrapper{
-    height: 78vh;
+    height: 77vh;
+    margin-bottom: 10px;
 }
 
 .curr_ticket {

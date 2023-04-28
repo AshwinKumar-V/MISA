@@ -16,7 +16,12 @@
     </div>
 
 
-    <div *ngFor="let item of list" class="panel_item" (click)="changeItem(item._id)">{{item.title}}</div>    
+    <div *ngFor="let item of list" class="panel_item flex_row_center_between" (click)="changeItem(item._id)">
+        <div>{{item.title}}</div>
+        <span class="material-symbols-outlined" *ngIf="(role == '/user')">
+            edit
+        </span>
+    </div>    
 
     <span *ngIf="(role == '/user') && (list.length == 0)">You've no new issues yet. Once you've initiated a conversation, then you can access them here.</span>    
     <span *ngIf="(role == '/admin') && (list.length == 0)">You've no tickets assigned. Check back in a while.</span>
