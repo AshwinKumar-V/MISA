@@ -1,0 +1,21 @@
+.holder{
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 80px 250px 1fr;
+    grid-template-rows: 60px 1fr;
+    grid-template-areas: 
+    "S L M"
+    "S L M";
+}
+
+.full_height, .full_height > *{
+    height: 100vh;
+}
+
+.main{
+    width: 75vw;
+    height: 100vh;
+}
+
+
+

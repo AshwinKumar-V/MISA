@@ -1,0 +1,116 @@
+<div class="admin-panel flex_column_center_between">
+    <div class="toolpanel flex_row_center_between">
+        <div class="tool">
+            <div class="tool-text">Issues Assigned</div>
+            <div class="tool-num">86</div>
+        </div>
+        <div class="tool">
+            <div class="tool-text">Issues Solved</div>
+            <div class="tool-num">24</div>
+        </div>
+        <div class="tool">
+            <div class="tool-text">Issues Pending</div>
+            <div class="tool-num">60</div>
+        </div>
+        <div class="tool">
+            <div class="tool-text">Issues Escalated</div>
+            <div class="tool-num">2</div>
+        </div>
+        <div class="tool">
+            <div class="tool-text">Response Time</div>
+            <div class="tool-num">60</div>
+        </div>
+        <div class="tool">
+            <div class="tool-text">Issues Passed</div>
+            <div class="tool-num">60</div>
+        </div>
+        <div class="tool">
+            <div class="tool-text">Issues Diverted</div>
+            <div class="tool-num">60</div>
+        </div>
+    </div>
+    <div class="flex_row_center_between content_wrapper">
+        
+        <div class="ticketarea flex_column_center_between">
+            <span class="default_text" *ngIf="curr_ticket.user_id == null">Select a ticket to start...</span>
+            <div *ngIf="curr_ticket.user_id != null" class="curr_ticket">
+                <h1>{{curr_ticket.title}}</h1>
+                <h5>{{curr_ticket.description}}</h5>
+                <div>Tags: 
+                    <span class="tag" *ngFor="let tag of curr_ticket.tags">{{tag}}</span>
+                </div>
+                <h5>User ID: {{curr_ticket.user_id}}</h5>
+                <h5>Status: {{curr_ticket.status}}</h5>
+                <button type="button" class="btn btn-primary" [disabled]="curr_ticket.status == 'closed'" (click)="updateTicket('closed')">Close Ticket</button>
+                <button type="button" class="btn btn-primary" [disabled]="(curr_ticket.status == 'open') || (curr_ticket.status == 're-opened')" (click)="updateTicket('re-opened')">Re-open Ticket</button>
+            </div>
+        </div>
+        <div class="leaderboard">
+            <div class="title-info">
+                <div class="title">LEADERBOARD🥇</div>
+                <div class="weekinfo">This week</div>
+            </div>
+            <div class="position-info">
+                <div class="position-title">Your Position</div>
+                <div class="position-rank">#25</div>
+            </div>
+            <div class="all-leaders">
+                <div class="leader-list">
+                    <img src="https://www.lensmen.ie/wp-content/uploads/2015/02/Profile-Portrait-Photographer-in-Dublin-Ireland..jpg" class="leader-profile">
+                    <div class="leader-info">
+                        <div class="leader-name">Akita Row</div>
+                        <div class="issues-solved">301 issues solved</div>
+                    </div>
+                    <div class="leader-ranking">#1</div>
+                    <div class="leader-progress">🔼</div>
+                </div>
+                <div class="leader-list">
+                    <img src="https://www.lensmen.ie/wp-content/uploads/2015/02/Profile-Portrait-Photographer-in-Dublin-Ireland..jpg" class="leader-profile">
+                    <div class="leader-info">
+                        <div class="leader-name">Akita Row</div>
+                        <div class="issues-solved">301 issues solved</div>
+                    </div>
+                    <div class="leader-ranking">#1</div>
+                    <div class="leader-progress">🔼</div>
+                </div>
+                <div class="leader-list">
+                    <img src="https://www.lensmen.ie/wp-content/uploads/2015/02/Profile-Portrait-Photographer-in-Dublin-Ireland..jpg" class="leader-profile">
+                    <div class="leader-info">
+                        <div class="leader-name">Akita Row</div>
+                        <div class="issues-solved">301 issues solved</div>
+                    </div>
+                    <div class="leader-ranking">#1</div>
+                    <div class="leader-progress">🔼</div>
+                </div>
+                <div class="leader-list">
+                    <img src="https://www.lensmen.ie/wp-content/uploads/2015/02/Profile-Portrait-Photographer-in-Dublin-Ireland..jpg" class="leader-profile">
+                    <div class="leader-info">
+                        <div class="leader-name">Akita Row</div>
+                        <div class="issues-solved">301 issues solved</div>
+                    </div>
+                    <div class="leader-ranking">#1</div>
+                    <div class="leader-progress">🔼</div>
+                </div>
+                <div class="leader-list">
+                    <img src="https://www.lensmen.ie/wp-content/uploads/2015/02/Profile-Portrait-Photographer-in-Dublin-Ireland..jpg" class="leader-profile">
+                    <div class="leader-info">
+                        <div class="leader-name">Akita Row</div>
+                        <div class="issues-solved">301 issues solved</div>
+                    </div>
+                    <div class="leader-ranking">#1</div>
+                    <div class="leader-progress">🔼</div>
+                </div>
+                <div class="leader-list">
+                    <img src="https://www.lensmen.ie/wp-content/uploads/2015/02/Profile-Portrait-Photographer-in-Dublin-Ireland..jpg" class="leader-profile">
+                    <div class="leader-info">
+                        <div class="leader-name">Akita Row</div>
+                        <div class="issues-solved">301 issues solved</div>
+                    </div>
+                    <div class="leader-ranking">#1</div>
+                    <div class="leader-progress">🔼</div>
+                </div>
+            </div> 
+        </div>
+    </div>
+       
+</div>

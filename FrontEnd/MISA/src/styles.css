@@ -1,0 +1,39 @@
+/* You can add global styles to this file, and also import other style files */
+body{
+    font-family: 'Poppins', sans-serif;
+    font-size: small;
+    font-weight: bold;
+    word-spacing: -0.1em;
+    margin:0px;
+    height: 100vh;
+    background-color: #f0f1ea;
+    
+}
+.holder{
+    height: 100vh;
+    display: grid;
+    grid-template-columns: 80px 250px 1fr;
+    grid-template-rows: 60px 1fr;
+    grid-template-areas: 
+    "S L M"
+    "S L M";
+}
+
+
+.flex_row_center_between, .flex_column_center_between{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.flex_column_center_between{
+    flex-direction: column;
+}
+
+.material-symbols-outlined:hover{
+    cursor: pointer;
+}
+
+/* html, body { height: 100%; } */
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; font-weight: 400; }

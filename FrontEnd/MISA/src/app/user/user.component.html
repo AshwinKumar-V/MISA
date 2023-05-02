@@ -1,0 +1,21 @@
+<div class="chat_area flex_column_center_between">
+    <span class="default_text" *ngIf="!history[0]">Enter a text to start a conversation...</span>
+    <div class="chat_history">
+        <ul class="flex_column_center_between">
+            <li *ngFor="let message of history" [ngClass]="message.role == 'user'? 'user': 'assistant'">
+                <div class="d-flex flex-column" *ngIf="message.role == 'user'">{{message.content}} :User</div>
+                <div class="d-flex flex-column" *ngIf="message.role == 'assistant'">Bot: {{message.content}}</div>
+                <span>
+                    <!-- <div>{{message.time | date: 'shortTime'}}</div> -->
+                    <div class="error_span">{{message.error}}</div>
+                </span>
+            </li>
+        </ul>
+    </div>
+    <div class="textbar flex_row_center_between">
+       <input type="text" [(ngModel)]="message" [disabled]="isBotTyping" placeholder="Your issue...">
+       <span class="material-symbols-outlined" (click)="sendMessage()">
+        send
+        </span>
+    </div>
+</div>
