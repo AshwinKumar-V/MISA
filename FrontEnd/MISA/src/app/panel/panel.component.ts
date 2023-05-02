@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { ChatService } from '../chat.service';
 import { TicketService } from '../ticket.service';
+import { MatDialog } from '@angular/material/dialog';
+import { TitleDialogComponent } from '../title-dialog/title-dialog.component';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-panel',
@@ -16,7 +19,8 @@ export class PanelComponent implements OnInit{
   constructor(
     private router: Router,
     private chat: ChatService,
-    private ticket: TicketService) {}
+    private ticket: TicketService,
+    private dialog : MatDialog) {}
 
   ngOnInit(): void {
     this.chat.all_conversations.subscribe({
@@ -61,5 +65,14 @@ export class PanelComponent implements OnInit{
 
   changeItem(id: string) {
     return this.role == '/user'? this.changeConversation(id): this.changeTicket(id)
+  }
+
+  async editTitle() {
+    var dialogRef = this.dialog.open(TitleDialogComponent)
+    var title = await lastValueFrom(dialogRef.afterClosed())
+    if (title) {
+      this.chat.updateConversationTitle(title)
+    }
+    return
   }
 }

@@ -18,7 +18,7 @@
 
     <div *ngFor="let item of list" class="panel_item flex_row_center_between" (click)="changeItem(item._id)">
         <div>{{item.title}}</div>
-        <span class="material-symbols-outlined" *ngIf="(role == '/user')">
+        <span class="material-symbols-outlined" *ngIf="(role == '/user')" (click)="editTitle()">
             edit
         </span>
     </div>    

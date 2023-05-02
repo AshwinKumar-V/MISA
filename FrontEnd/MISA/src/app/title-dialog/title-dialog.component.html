@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Edit Title</h1>
+
+<mat-dialog-content>
+    <mat-form-field appearance="fill">
+        <input matInput [(ngModel)]="title">
+      </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close>Cancel</button>
+    <button mat-button (click)="close()" cdkFocusInitial>Change</button>
+</mat-dialog-actions>
